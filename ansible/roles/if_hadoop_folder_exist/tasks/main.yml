@@ -1,0 +1,8 @@
+  ##### CHECK HADOOP EXISTS #####
+  - name: Check if Hadoop folder exists
+    stat:
+      path: "hadoop-{{hadoop_version}}/"
+    register: hadoop_register_name
+  - assert:
+      that: hadoop_register_name.stat.exists
+      msg: "Hadoop folder does not exists or Hadoop's version is wrong"

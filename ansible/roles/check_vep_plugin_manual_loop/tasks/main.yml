@@ -1,0 +1,10 @@
+##### CHECK IF A PLUGIN FILE EXISTS #####
+---
+- name: Find plugin {{vep_plugin_name}} directory
+  stat:
+    path: .vep/Plugins/{{vep_plugin_name}}.pm
+  register: plugin_vep_register_name
+- name: Check plugin {{vep_plugin_name}} exists
+  assert:
+    that: plugin_vep_register_name.stat.exists
+    msg: "The plugin {{vep_plugin_name}} does not exist"

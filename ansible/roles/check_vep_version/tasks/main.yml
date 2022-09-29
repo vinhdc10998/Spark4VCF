@@ -1,0 +1,34 @@
+- name: Check if VEP is installed properly
+  include_role:
+    name: if_vep_folder_exist
+
+#### CHECK VEP VERSION 1 #####
+- name: Call ./vep
+  command: chdir=ensembl-vep ./vep
+  register: VEP_info
+- name: Split VEP info by line
+  set_fact:
+    VEP_info_after_split: "{{ VEP_info.stdout.split('\n') }}"
+- name: Get VEP version info of ensembl-vep (version that is git)
+  set_fact:
+    real_vep_version: "{{ VEP_info_after_split[9].split()[-1] }}"
+- name: Check VEP version (ensembl-vep) - through cmd
+  assert:
+    that: real_vep_version == "{{ensembl_vep_version}}"
+    msg: "VEP version (ensembl-vep) should be {{ensembl_vep_version}}, instead it is {{real_vep_version}}"
+- name: Get VEP version info of ensembl (version that is installed)
+  set_fact:
+    real_vep_version: "{{ VEP_info_after_split[5].split()[-1].split('.')[0] }}"
+- name: Check VEP version (ensembl) - through cmd
+  assert:
+    that: real_vep_version == "{{major_vep_version}}"
+    msg: "VEP version (ensembl) should be {{major_vep_version}}, instead it is {{real_vep_version}}"
+
+##### CHECK VEP VERSION 2 ######
+- name: Get VEP version information from file
+  include_role:
+    name: get_vep_version_from_file
+- name: Check VEP version (ensembl-vep) - direct in folder .version
+  assert:
+    that: real_vep_version == "{{ major_vep_version }}"
+    msg: "VEP version (ensembl-vep) should be {{major_vep_version}}, instead it is {{real_vep_version}}"

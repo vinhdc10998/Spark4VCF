@@ -1,0 +1,6 @@
+host: all
+distribution: auto
+vep: auto
+VEP cache: auto
+snpeff: auto
+vep plugin: auto

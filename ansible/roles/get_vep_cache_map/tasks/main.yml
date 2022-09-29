@@ -1,0 +1,14 @@
+- name: Get list of cache name
+  command: ls -v .vep/
+  register: vep_cache_name
+- name: Get the directory of each cache
+  with_items: "{{vep_cache_name.stdout_lines}}"
+  command: ls -v .vep/{{item}}
+  register: vep_cache_version
+- name: Make a map of all cache species and assembly of the server
+  with_items: "{{vep_cache_version.results}}"
+  set_fact:
+    vep_cache_map: "{{ vep_cache_map | combine( { item.item : item.stdout_lines } ) }}"
+  loop_control:
+    label: "{{ {item.item: item.stdout_lines} }}"
+  when: item.item != "Plugins"

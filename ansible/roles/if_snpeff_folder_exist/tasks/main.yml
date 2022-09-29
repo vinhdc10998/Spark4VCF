@@ -1,0 +1,8 @@
+  - name: Get SnpEff directory
+    stat:
+      path: snpEff/
+    register: snpEff_directory_path
+  - name: Check if SnpEff is installed correctly
+    assert:
+      that: snpEff_directory_path.stat.exists
+      msg: "SnpEff is not installed in the right directory or is not installed at all"

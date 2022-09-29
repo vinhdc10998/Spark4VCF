@@ -1,0 +1,9 @@
+- name: Get VEP cache map from current server
+  include_role:
+    name: get_vep_cache_map
+  vars:
+    vep_cache_map: {}
+- name: Compare VEP cache map to the first server
+  assert: 
+    that: vep_cache_map == vep_cache_map_check_auto
+    msg: "The cache of this server does not match"

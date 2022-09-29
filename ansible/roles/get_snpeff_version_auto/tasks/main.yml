@@ -1,0 +1,11 @@
+- name: Check if SnpEff is installed properly
+  include_role:
+    name: if_snpeff_folder_exist
+
+##### GET SNPEFF VERSION INFO TO CHECK AUTOMATICALLY #####
+- name: Call snpEff version
+  command: chdir=snpEff java -jar snpEff.jar -version
+  register: snpEff_version_info
+- name: Add SnpEff information into the map
+  set_fact:
+    my_map: "{{ my_map | combine({'snpEff_version': snpEff_version_info.stdout.split()[1]}) }}"

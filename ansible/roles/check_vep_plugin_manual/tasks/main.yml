@@ -1,0 +1,7 @@
+### CHECK MULTIPLE PLUGIN FILES ONE BY ONE THROUGH THE LOOP
+- name: Start Checking VEP Plugins
+  with_items: "{{vep_plugin_file_list}}"
+  include_role:
+    name: check_vep_plugin_manual_loop
+  vars:
+    vep_plugin_name: "{{ item }}"

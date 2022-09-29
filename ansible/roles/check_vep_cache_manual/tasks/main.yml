@@ -1,0 +1,7 @@
+### CHECK MULTIPLE CACHE FOLDER ONE BY ONE THROUGH THE LOOP
+- name: Start Checking VEP Cache
+  with_items: "{{vep_cache_directory_list}}"
+  include_role:
+    name: check_vep_cache_manual_loop
+  vars:
+    vep_cache_directory: "{{ item }}"

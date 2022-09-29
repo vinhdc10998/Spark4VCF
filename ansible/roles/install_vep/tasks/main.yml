@@ -1,0 +1,50 @@
+- name: Install packages
+  apt:
+    update_cache: yes
+    pkg:
+      - gcc
+      - g++
+      - make
+      - cpanminus
+      - libmysqlclient-dev
+      - tar
+      - gzip
+      - unzip
+      - libbz2-dev
+      - liblzma-dev
+      - expect
+      - perl-doc
+
+- name: Install Archive::Zip by Perl
+  cpanm:
+    name: Archive::Zip
+- name: Install DBD::mysql by Perl
+  cpanm:
+    name: DBD::mysql
+- name: Install DBI by Perl
+  cpanm:
+    name: DBI
+- name: Install PerlIO::gzip by Perl (improve runtime - optional)
+  cpanm:
+    name: PerlIO::gzip
+
+- name: Git VEP folder
+  ansible.builtin.git:
+    repo: https://github.com/Ensembl/ensembl-vep.git
+    dest: ensembl-vep
+    version: "release/{{ vep_version_to_install }}"
+
+- name: Install VEP (without Cache, FASTA, Plugins)
+  expect:
+    command: perl INSTALL.pl
+    chdir: ensembl-vep
+    responses:
+      # Keys in response map are regular expressions, so ? and ( ) are treated as regexp control characters
+      # Have to add \ before them
+      'Do you wish to exit so you can get updates \(y\) or continue \(n\): ': "n"
+      'Do you want to overwrite it \(if updating VEP this is probably OK\) \(y/n\)\? ': "y"
+      'Do you want to install any cache files \(y/n\)\? ': "n"
+      'Cache directory /home/ubuntu/.vep does not exists \- do you want to create it \(y/n\)\? ': "y"
+      'Do you want to install any FASTA files \(y/n\)\? ': "n"
+      'Do you want to install any plugins \(y/n\)\? ': "n"
+    timeout: 60000

@@ -1,0 +1,17 @@
+- hosts: all[0]
+  become: true
+  vars:
+    my_map: {}
+    output_ansible_txt_path: "hello.txt"
+  roles:
+  - get_distribution_auto
+  - get_vep_version_auto
+  - get_snpeff_version_auto
+  - get_vep_cache_map_auto
+  tasks:
+  - name: Export version info to txt
+    include_role: 
+      name: output_ansible_to_txt
+    vars:
+      export_value: "{{ my_map }}"
+ 

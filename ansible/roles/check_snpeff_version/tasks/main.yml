@@ -1,0 +1,11 @@
+- name: Check if SnpEff is installed properly
+  include_role:
+    name: if_snpeff_folder_exist
+
+- name: Call snpEff version
+  command: chdir=snpEff java -jar snpEff.jar -version
+  register: snpEff_version_info
+- name: Check snpEff version
+  assert:
+    that: snpEff_version_info.stdout.split()[1] == '{{snpEff_version}}'
+    msg: "snpEff version should be {{snpEff_version}}, instead it is {{snpEff_version_info.stdout.split()[1]}}"

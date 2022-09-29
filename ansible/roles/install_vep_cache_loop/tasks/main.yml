@@ -1,0 +1,26 @@
+- name: Get VEP cache {{vep_cache_to_install_loop.species}} {{vep_cache_to_install_loop.assembly}} directory
+  stat:
+    path: .vep/{{vep_cache_to_install_loop.species}}/{{vep_version_number}}_{{vep_cache_to_install_loop.assembly}}
+  register: vep_cache_directory_path
+
+- name: Install VEP Cache {{vep_cache_to_install_loop.species}}  {{vep_cache_to_install_loop.assembly}}
+  become: false
+  expect:
+    command: "perl INSTALL.pl -a c -s {{vep_cache_to_install_loop.species}} -y {{vep_cache_to_install_loop.assembly}}"
+    chdir: ensembl-vep
+    responses:
+      # Keys in response map are regular expressions, so ? and ( ) are treated as regexp control characters
+      # Have to add \ before them
+      'Do you wish to exit so you can get updates \(y\) or continue \(n\): ': "n"
+    timeout: 86400 # in seconds
+  when: not vep_cache_directory_path.stat.exists
+  register: install_vep_cache_result
+
+- name: Show message when cache is skipped
+  debug: 
+    msg: >-
+      Cache {{vep_cache_to_install_loop.species}} cannot be installed/overwritten because
+      folder .vep/{{vep_cache_to_install_loop.species}}/{{vep_version_number}}_{{vep_cache_to_install_loop.assembly}}
+      exists. You have to delete the folder {{vep_version_number}}_{{vep_cache_to_install_loop.assembly}}
+      to install the cache (remember that there can be FASTA files in that folder)
+  when: install_vep_cache_result is skipped

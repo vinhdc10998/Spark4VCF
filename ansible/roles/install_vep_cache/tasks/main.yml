@@ -1,0 +1,11 @@
+- name: Get VEP information from .version/ensembl file 
+  include_role:
+    name: get_vep_version_from_file
+
+- name: Install VEP cache
+  include_role:
+    name: install_vep_cache_loop
+  vars:
+    vep_cache_to_install_loop: "{{ item }}"
+    vep_version_number: "{{ real_vep_version }}"
+  with_items: "{{ vep_cache_to_install }}"

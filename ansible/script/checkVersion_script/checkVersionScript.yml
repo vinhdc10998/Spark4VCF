@@ -1,0 +1,21 @@
+- hosts: all
+  become: true
+  vars:
+    distribution: Ubuntu
+    distribution_major_version: 18
+    distribution_version: 18.04
+    ensembl_vep_version: 103.1
+    major_vep_version: 103
+    hadoop_version: "3.2.1"
+    snpEff_version: 5.0e
+    vep_cache_directory_list:
+      - acanthochromis_polyacanthus/103_ASM210954v1
+    vep_cache_map_check_auto: {}
+    vep_plugin_file_list: []
+    vep_plugin_list_check_auto: []
+  roles:
+    - check_distribution
+    - check_vep_version
+    - check_vep_cache_manual
+    - check_snpeff_version
+    - check_vep_cache_auto

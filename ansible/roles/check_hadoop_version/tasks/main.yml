@@ -1,0 +1,14 @@
+- name: Check if hadoop folder exists
+  include_role:
+    name: if_hadoop_folder_exist
+
+- name: Call Hadoop version
+  command: chdir="hadoop-{{ hadoop_version }}/" hadoop version
+  register: hadoop_version_info
+- name: Set real_hadoop_version variable
+  set_fact:
+    real_hadoop_version: "{{ hadoop_version_info.stdout.split('\n')[0].split()[-1] }}"
+- name: Check Hadoop Version
+  assert:
+    that: real_hadoop_version == "{{ hadoop_version }}"
+    msg: "Hadoop is not installed properly or is not the right version"

@@ -1,0 +1,9 @@
+##### CHECK IF A CACHE FOLDER EXISTS #####
+- name: Find cache {{vep_cache_directory}} directory
+  stat:
+    path: .vep/{{vep_cache_directory}}
+  register: cache_vep_register_name
+- name: Check cache {{vep_cache_directory}} exists
+  assert:
+    that: cache_vep_register_name.stat.exists
+    msg: "The cache {{vep_cache_directory}} does not exist"

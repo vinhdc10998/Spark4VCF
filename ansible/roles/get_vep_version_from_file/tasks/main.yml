@@ -1,0 +1,7 @@
+- name: Read file .version/ensembl
+  slurp:
+    src: ensembl-vep/.version/ensembl
+  register: ensembl_version_file_content
+- name: Set real_vep_version variable to VEP version of remote server
+  set_fact:
+    real_vep_version: "{{ (ensembl_version_file_content['content'] | b64decode).split('\n')[0].split()[-1] }}"

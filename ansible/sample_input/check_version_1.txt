@@ -1,0 +1,19 @@
+# COMMENT
+#
+#
+#
+#
+host: all
+distribution: Ubuntu 18.04
+VEP: 104.3
+VEP cache:
+- acanthochromis_polyacanthus/104_ASM210954v1
+- accipiter_nisus/104_Accipiter_nisus_ver1.0
+snpeff: 4.3t
+VEP plugin:
+- AncestralAllele
+- Blosum62
+- CADD
+- CSN
+- Carol
+- Condel

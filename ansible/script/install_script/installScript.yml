@@ -1,0 +1,18 @@
+- hosts: all
+  become: true
+  vars:
+    vep_version_to_install: 104
+    vep_fasta_to_install:
+      - { "species": "acanthochromis_polyacanthus", "assembly": "ASM210954v1" }
+      - { "species": "accipiter_nisus", "assembly": "Accipiter_nisus_ver1.0" }
+    vep_plugins_to_install: "AncestralAllele,Blosum62,CADD,CSN,Carol,Condel"
+    snpEff_version_to_install: "snpEff_v4_3t_core"
+    vep_cache_to_install:
+      - { "species": "acanthochromis_polyacanthus", "assembly": "ASM210954v1" }
+      - { "species": "accipiter_nisus", "assembly": "Accipiter_nisus_ver1.0" }
+  roles:
+    - install_vep
+    - install_vep_fasta
+    - install_vep_plugin
+    - install_snpEff
+    - install_vep_cache

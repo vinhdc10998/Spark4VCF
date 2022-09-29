@@ -1,0 +1,8 @@
+- name: Get VEP cache map of the first server
+  include_role:
+    name: get_vep_cache_map
+  vars:
+    vep_cache_map: {}
+- name: Set VEP cache map information to map
+  set_fact:
+    my_map: "{{ my_map | combine({'vep_cache_map_check_auto': vep_cache_map}) }}"

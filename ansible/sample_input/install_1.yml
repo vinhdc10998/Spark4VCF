@@ -1,0 +1,20 @@
+hosts: all
+VEP: 104
+VEP FASTA:
+  - species: acanthochromis_polyacanthus
+    assembly: ASM210954v1
+  - species: accipiter_nisus
+    assembly: Accipiter_nisus_ver1.0
+VEP plugins:
+  - AncestralAllele
+  - Blosum62
+  - CADD
+  - CSN
+  - Carol
+  - Condel
+snpEff: snpEff_v4_3t_core
+VEP cache:
+  - species: acanthochromis_polyacanthus
+    assembly: ASM210954v1
+  - species: accipiter_nisus
+    assembly: Accipiter_nisus_ver1.0

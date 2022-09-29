@@ -1,0 +1,7 @@
+- name: Get VEP Plugin list from the current server
+  include_role:
+    name: get_vep_plugin_list
+- name: Compare VEP plugin list to the first server
+  assert: 
+    that: vep_plugins_list == vep_plugin_list_check_auto
+    msg: "The VEP plugin of this server does not match"

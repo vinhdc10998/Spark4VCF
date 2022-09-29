@@ -1,0 +1,17 @@
+#Packages:
+# unzip: to unzip file
+# openjdk-11-jre-headless: java to run snpEff
+- name: Install packages
+  apt:
+    update_cache: yes
+    pkg:
+      - unzip
+      - openjdk-11-jre-headless
+
+- name: Download and unzip SnpEff
+  unarchive:
+    src: "https://downloads.sourceforge.net/project/snpeff/{{ snpEff_version_to_install }}.zip"
+    # https://nchc.dl.sourceforge.net/project/snpeff/snpEff_latest_core.zip
+    # https://snpeff.blob.core.windows.net/versions/snpEff_latest_core.zip
+    dest: "./"
+    remote_src: yes

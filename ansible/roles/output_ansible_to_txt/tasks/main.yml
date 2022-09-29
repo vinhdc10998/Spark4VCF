@@ -1,0 +1,5 @@
+- name: export output to txt
+  copy:
+    content: "{{ export_value }}"
+    dest: "{{ output_ansible_txt_path }}"
+  delegate_to: localhost

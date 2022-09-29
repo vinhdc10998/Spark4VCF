@@ -1,0 +1,10 @@
+- name: Install VEP Plugins
+  become: false
+  expect:
+    command: "perl INSTALL.pl -a p -g {{ vep_plugins_to_install }}"
+    chdir: ensembl-vep
+    responses:
+      # Keys in response map are regular expressions, so ? and ( ) are treated as regexp control characters
+      # Have to add \ before them
+      'Do you wish to exit so you can get updates \(y\) or continue \(n\): ': "n"
+    timeout: 30000 # in seconds

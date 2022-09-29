@@ -1,0 +1,6 @@
+- name: Call the VEP Plugins folder
+  command: ls -v .vep/Plugins/
+  register: vep_plugins_list_info
+- name: Get VEP Plugins list
+  set_fact:
+    vep_plugins_list: "{{ vep_plugins_list_info.stdout_lines }}"

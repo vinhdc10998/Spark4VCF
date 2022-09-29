@@ -1,0 +1,9 @@
+##### CHECK VEP EXISTS #####
+- name: Get VEP folder directory
+  stat:
+    path: ensembl-vep/
+  register: vep_register_name
+- name: Check if VEP folder exists
+  assert:
+    that: vep_register_name.stat.exists
+    msg: "VEP is not installed in the right directory or is not installed at all"

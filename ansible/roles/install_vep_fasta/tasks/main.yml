@@ -1,0 +1,11 @@
+- name: Install VEP FASTA
+  become: false
+  expect:
+    command: "perl INSTALL.pl -a f -s {{item.species}} -y {{item.assembly}}"
+    chdir: ensembl-vep
+    responses:
+      # Keys in response map are regular expressions, so ? and ( ) are treated as regexp control characters
+      # Have to add \ before them
+      'Do you wish to exit so you can get updates \(y\) or continue \(n\): ': "n"
+    timeout: 86400 # in seconds
+  with_items: "{{vep_fasta_to_install}}"

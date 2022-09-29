@@ -1,0 +1,12 @@
+- name: Check Distribution
+  assert:
+    that: ansible_distribution=="{{ distribution }}"
+    msg: "Distribution is not {{ distribution }}, it is {{ ansible_distribution }}"
+- name: Check Distribution version
+  assert:
+    that: ansible_distribution_version=="{{ distribution_version }}"
+    msg: "Distribution is not version {{ distribution_version }}, it is {{ ansible_distribution_version }}"
+- name: Check distribution major version
+  assert:
+    that: ansible_distribution_major_version=="{{ distribution_major_version }}"
+    msg: "Distribution is not version {{ distribution_major_version }}, it is {{ ansible_distribution_major_version }}"

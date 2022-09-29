@@ -1,0 +1,6 @@
+- name: Get VEP Plugins list from the first server
+  include_role:
+    name: get_vep_plugin_list
+- name: Set VEP Plugins list information to map
+  set_fact:
+    my_map: "{{ my_map | combine({'vep_plugin_list_check_auto': vep_plugins_list}) }}"
