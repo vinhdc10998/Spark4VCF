@@ -1,4 +1,4 @@
-# Deploy VASpark cluster using VMs on Virtualbox
+# Deploy VA Spark cluster using VMs on Virtualbox
 
 Vagrant is a great tool when it comes to deploy multiple virtual machines that have the exact system resources and libraries as the current running machines in different environments. You can find out more information about Vagrant in [here](https://www.vagrantup.com/).
 
@@ -17,26 +17,26 @@ Without ado, let’s jump right into the detailed steps for how to do it.
 ### 1. Create a new project folder in your local machine
 
 ```bash
-mkdir -p projects/va-spark-vagrant
-cd projects/va-spark-vagrant
-mkdir resources
-
+mkdir -p va-spark-vagrant
+cd va-spark-vagrant
 ```
-### 2.  Create a new shell script to tell vagrant to create the Ubuntu (18.04) machines with pre-installed tools like `java jdk, software-properties-common ..`
+### 2.  Create a new shell script to tell vagrant to create the Ubuntu (18.04) machines with pre-installed tools or libraries like `java jdk, software-properties-common ..`
 
 ```bash
+# In va-spark-vagrant folder
 mkdir scripts
 cd scripts
-touch bootstrap.sh
+nano bootstrap.sh
+cd ..
 ```
-Copy the following file to bootstrap.sh
+Copy the following lines to bootstrap.sh file
 ```bash
-VAGRANT_HOME="/home/vagrant"
+VAGRANT_HOME="/home/vagrant" #Vituarl user
 
 sudo apt-get -y update
 
-# install vim
-sudo apt-get install -y vim htop r-base
+# install nano
+sudo apt-get install -y nano htop r-base
 
 # install jdk8
 sudo apt-get install -y software-properties-common python-software-properties
@@ -45,22 +45,25 @@ sudo apt-get update
 sudo apt-get install -y openjdk-8-jdk
 ```
 
-### 3. Create vagrant script file
+### 3. Create vagrant script file to create virtual machines
 
 ```bash
-cd ..
-touch Vagrantfile
+# In va-spark-vagrant folder
+nano Vagrantfile
 ```
-Copy the following content to Vagrant file
+Copy the following content to Vagrant file. In this file, you can modify useful configuration parameters that you can customize. Beside that, you need to attention to **config.vm.define, v.name**, and **node.vm.hostname** as buid parameters to modify setting file in hadoop section.
 
+* **ipAdrPrefix** - IP of vituarl machine instances
+* **memTot** - Memory total resource
+* **numNodes** - Number of node
 ```bash
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
 Vagrant.require_version">= 1.5.0"
 
-ipAdrPrefix = "192.168.100.1"
-memTot = 30000  #hyperparameter
+ipAdrPrefix = "192.168.100.1" 
+memTot = 30000
 numNodes = 4
 memory = memTot/numNodes
 cpuCap = 100/numNodes
@@ -68,18 +71,18 @@ cpuCap = 100/numNodes
 Vagrant.configure(2) do |config|
 	r = numNodes..1
 	(r.first).downto(r.last).each do |i|
-		config.vm.define "node-#{i}" do |node|
+		config.vm.define "cluster#{i}" do |node|
 			#node.vm.box = "hashicorp/precise64"
 			node.vm.box = "hashicorp/bionic64"
 			node.vm.provider "virtualbox" do |v|
-				v.name = "spark-node#{i}"
+				v.name = "cluster#{i}"
 				v.customize ["modifyvm", :id, "--cpuexecutioncap", cpuCap]
 				v.customize ["modifyvm", :id, "--memory", memory.to_s]
 				v.customize ["modifyvm", :id, "--usb", "off"]
 				v.customize ["modifyvm", :id, "--usbehci", "off"]
 			end
 			node.vm.network "private_network", ip: "#{ipAdrPrefix}#{i}"
-			node.vm.hostname = "spark-node#{i}"
+			node.vm.hostname = "cluster#{i}"
 			node.vm.provision "shell" do |s|
 				s.path = "./scripts/bootstrap.sh"
 				s.args = "#{i} #{numNodes} #{ipAdrPrefix}"
@@ -90,25 +93,36 @@ Vagrant.configure(2) do |config|
 end
 
 ```
-Run the following command to trigger up the vm instances.
+Run the following command to trigger up the vituarl machine instances.
 ```bash
 vagrant up
-
 ```
 
 ## II.Hadoop installation
 
-This tutorial will help you to install Apache Hadoop with a basic cluster. In the example below, there will be 1 master (also be used as a worker) node - cluster1, and 3 worker nodes - cluster2, cluster3, cluster4. More worker nodes can be used as users need. All nodes in the instruction use OS Ubuntu Server 18.04, with login user ubuntu, therefore the home directory will be /home/ubuntu/. Remember to replace your appropriate Home directory with /home/ubuntu/.
+This tutorial will help you to install Apache Hadoop with a basic cluster. In the example below, there will be 1 master (also be used as a worker) node - cluster1, and 3 worker nodes - cluster2, cluster3, cluster4. More worker nodes can be used as users need. All nodes in the instruction use OS Ubuntu Server 18.04, with login user ubuntu, therefore the home directory will be /home/vagrant/. Remember to replace your appropriate Home directory with /home/vagrant/. (You set in bootstrap.sh file)
+
+You need to ssh to **all node** in the VMS in order to run the below commands. 
+```bash
+vagrant ssh cluster1
+```
+### 1. Install SSH on **all nodes**
+
+```bash
+sudo apt-get -y update && sudo apt-get -y install ssh
+```
+### 2. Add all our IP nodes to /etc/hosts on **all nodes**
+
+```bash
+sudo nano /etc/hosts
+```
 
 To figure out IP address of the virtual machines run the following command:
 
 ```bash
 $ ip addr
-
 #I run the above-mentioned command on master and workers (slaves). 
-
 #For each machine you will find different IP address. 
-
 ```
 
 Below are the 4 nodes and their IP addresses I will be referring to here:
@@ -117,36 +131,11 @@ Below are the 4 nodes and their IP addresses I will be referring to here:
 192.168.100.12 cluster2
 192.168.100.13 cluster3
 192.168.100.14 cluster4
-
 ```
 
-You need to ssh to every node in the VMS in order to run the below commands
-```bash
-vagrant ssh spark-node1
-```
+And paste this IP to the end of /etc/hosts file:
 
-### 1. Install SSH on **all nodes**
-
-```bash
-sudo apt-get -y update && sudo apt-get -y install ssh
-```
-
-### 2. Add all our nodes to /etc/hosts on **all nodes**
-
-```bash
-sudo nano /etc/hosts
-```
-And paste this to the end of the file:
-
-```bash 
-/etc/hosts
-
-192.168.100.11 cluster1
-192.168.100.12 cluster2
-192.168.100.13 cluster3
-192.168.100.14 cluster4
-```
-Now configure Open SSH server-client on master. To configure Open SSH server-client, run the following command:  
+Now configure Open SSH server-client on **master**(In our experience, we selected cluster 1 as the master node). To configure Open SSH server-client, run the following command:  
 
 ```
 $ sudo apt-get install openssh-server openssh-client
@@ -185,7 +174,7 @@ You can exit from slave machine by type the command:
 ```
 $ exit
 ```
-### 4. Install JDK1.8 on **all 4 nodes**
+### 4. Install JDK1.8 on **all nodes**
 
 ```bash
 sudo apt-get -y install openjdk-8-jdk-headless
@@ -193,7 +182,7 @@ sudo apt-get -y install openjdk-8-jdk-headless
 
 ### 5. Install Hadoop
 
-Download Hadoop 2.7.3 in `all nodes`:
+Download Hadoop 2.7.3 in **all nodes**:
 
 ```bash
 mkdir /tmp/hadoop/ && cd /tmp/hadoop/
@@ -203,29 +192,24 @@ Unzip
 
 ```bash
 tar -xzf hadoop-2.7.3.tar.gz
-
 ```
 
 Rename the directory for short
 
 ```bash
 mv hadoop-2.7.3 /home/vagrant/hadoop
-
 ```
-
+This section deals with important parameters to be specified in the given configuration files. You can refer setting this in hadoop's website: https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html
 
 Update `hadoop-env.sh` in **all nodes**:
 ```bash
 nano /home/vagrant/hadoop/etc/hadoop/hadoop-env.sh
-
 ```
 In `hadoop-env.sh` file, file the line starts with `export JAVA_HOME=` and replaces it with the line below. If not found, then add the line at the end of the file.
 
 ```bash
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-
 ```
-
 Update `core-site.xml` in **all nodes**:
 ```bash
 nano /home/vagrant/hadoop/etc/hadoop/core-site.xml
@@ -291,7 +275,6 @@ nano /home/vagrant/hadoop/etc/hadoop/yarn-site.xml
 ```
 The full content of `yarn-site.xml` in **all nodes**:
 ```xml
-
 <?xml version="1.0"?>
 <configuration>
         <property>
@@ -339,7 +322,6 @@ Update `mapred-site.xml` in **all nodes** (If not existed, create this file):
 
 ```bash
 nano /home/vagrant/hadoop/etc/hadoop/mapred-site.xml
-
 ```
 
 The full content of `mapred-site.xml` in **all nodes**:
@@ -372,7 +354,6 @@ The full content of `mapred-site.xml` in **all nodes**:
             <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
     </property>
 </configuration>
-
 ``` 
 Edit *slaves* (workers) file in **all nodes**:
  
@@ -382,7 +363,6 @@ nano /home/vagrant/hadoop/etc/hadoop/slaves
 And add the following lines (delete localhost if such a line exists):
 
 ```bash
-[slaves file]
 cluster1
 cluster2
 cluster3
@@ -396,7 +376,6 @@ nano /home/vagrant/hadoop/etc/hadoop/masters
 And add the following lines (delete localhost if such a line exists):
 
 ```bash
-[masters file]
 cluster1
 ```
 
@@ -461,6 +440,7 @@ Run jps on cluster1 should list the following:
 
 Run jps on cluster2, 3, 4 should list the following:
 ![Jps console result for cluster 2,3,4](https://i.imgur.com/y1YFqe4.png)
+
 Update firewall rules for port 50070 and port 8088 to be accessible.
 ```bash
 sudo ufw allow 50070
@@ -472,18 +452,19 @@ Then set up a security group for inbound rules value for ports `50070` and `8088
 
 By accessing `http://${cluster1}:50070` you should see the following HDFS web UI (where ${cluster_1} is the IP value you can retrieve from AWS console).
 
-![Overview about the cluster](https://i.imgur.com/YjW73EA.png).
+![Overview about the cluster](https://i.imgur.com/YjW73EA.png)
 
-![Running instances](https://i.imgur.com/B8EZ7md.png).
+![Running instances](https://i.imgur.com/B8EZ7md.png)
 
 By accessing `http://${cluster1}:8088` you should see the following YARN web UI.
 
-![Hadoop server GUI](https://i.imgur.com/3MMtEsm.png).
+![Hadoop server GUI](https://i.imgur.com/3MMtEsm.png)
 
 Note that if you're having the issue which DataNode is not up and running in `cluster 1`:
-![Issue about cluster 1](https://i.imgur.com/qyCkudz.png).
 
-You would need to remove the following directories in `cluster 1`:
+![Issue about cluster 1](https://i.imgur.com/qyCkudz.png)
+
+You would need to **stop** cluster and remove the following directories in `cluster 1` and **start** cluster again:
 
 ```bash
 sudo rm -rf /home/vagrant/hadoop/hdfs/namenode/
@@ -498,21 +479,12 @@ sudo chown vagrant:vagrant /home/vagrant/hadoop/hdfs/namenode/
 sudo chown vagrant:vagrant /home/vagrant/hadoop/hdfs/datanode/
 sudo chmod 777 /home/vagrant/hadoop/hdfs/namenode/
 sudo chmod 777 /home/vagrant/hadoop/hdfs/datanode/
-```vagrant
-
-### 10. setting lib by uploading a file to HDFS
-
-Writing and reading to HDFS is done with command hdfs dfs. First, manually create your home directory. All other commands will use a path relative to this default home directory: (note that ubuntu is my logged in user. If you login with different user then please use your user id instead of ubuntu).
-
-```bash
-jar cv0f spark-libs.jar -C $SPARK_HOME/jars/ .
-hdfs dfs -mkdir -p /user/vagrant/
-hdfs dfs -put spark-libs.jar /user/vagrant/
-hdfs dfs -ls /user/vagrant/
-
 ```
-Get a books file (EXAMPLE)
+### 10. Setting lib by uploading a file to HDFS
 
+Writing and reading to HDFS is done with command hdfs dfs. First, manually create your home directory. All other commands will use a path relative to this default home directory: (note that ubuntu is my logged in user. If you login with different user then please use your user id instead of ubuntu). Example:
+
+Get a books file
 ```bash
 wget -O alice.txt https://www.gutenberg.org/files/11/11-0.txt
 ```
@@ -528,10 +500,19 @@ List a file on hdfs:
 ```bash
 hdfs dfs -ls books/
 ```
-![hdfs dfs ls](https://i.imgur.com/dtsi2jX.png).
-You can also check in HDFS Web UI
+![hdfs dfs ls](https://i.imgur.com/dtsi2jX.png)
 
-### 11. Stopping cluster
+You can also check in HDFS Web UI. After that, we set lib by uploading a file to HDFS
+
+```bash
+jar cv0f spark-libs.jar -C $SPARK_HOME/jars/ .
+hdfs dfs -mkdir -p /user/vagrant/
+hdfs dfs -put spark-libs.jar /user/vagrant/
+hdfs dfs -ls /user/vagrant/
+```
+
+
+### 11. Stopping cluster (We don't need stopping cluster if we keep run next section)
 ```bash
 stop-yarn.sh && stop-dfs.sh
 ```
@@ -544,7 +525,6 @@ stop-yarn.sh && stop-dfs.sh
 cd /home/vagrant/
 wget https://archive.apache.org/dist/spark/spark-2.4.0/spark-2.4.0-bin-hadoop2.7.tgz
 ```
-
 ### 2. Unzip the file's contents and rename the folder to spark
 
 ```bash
@@ -585,7 +565,7 @@ Notes: when running with VEP, need to run hdfs dfsadmin -safemode leave to disab
 
 ```bash
 sudo apt-get update
-sudo apt-get install libdbi-perl gcc libdbd-mysql-perl perl-base=5.26.1-6ubuntu0.5 gcc=4:7.4.0-1ubuntu2.3 g++=4:7.4.0-1ubuntu2.3 make=4.1-9.1ubuntu1 libbz2-dev=1.0.6-8.1ubuntu0.2 liblzma-dev=5.2.2-1.3 libpng-dev=1.6.34-1ubuntu0.18.04.2 uuid-dev=2.31.1-0.4ubuntu3.7 cpanminus libmysqlclient-dev mysql-server unzip=6.0-21ubuntu1.1 git make unzip libpng-dev uuid-dev bcftools
+sudo apt-get install libdbi-perl gcc libdbd-mysql-perl perl-base=5.26.1-6ubuntu0.6 gcc=4:7.4.0-1ubuntu2.3 g++=4:7.4.0-1ubuntu2.3 make=4.1-9.1ubuntu1 libbz2-dev=1.0.6-8.1ubuntu0.2 liblzma-dev=5.2.2-1.3 libpng-dev=1.6.34-1ubuntu0.18.04.2 uuid-dev=2.31.1-0.4ubuntu3.7 cpanminus libmysqlclient-dev mysql-server git make unzip libpng-dev uuid-dev bcftools liblzma5=5.2.2-1.3
 sudo cpanm Archive::Zip
 sudo cpanm Archive::Extract
 sudo cpanm DBD::mysql
@@ -600,7 +580,6 @@ make
 cd ..
 export KENT_SRC=`pwd`
 sudo cpanm Bio::DB::BigFile
-
 ```
 
 ### 2. Install vep version 100
@@ -620,11 +599,7 @@ perl INSTALL.pl
 - All else configs: Default
 
 ### 3. Test VEP
-Copy data file from local to AWS EC2 instance (EC2-AWS optional)
-```bash
-scp -i ${pem_file} ${path_to_data_file_local} ${user_name_ec2_machine}@${ec2_ip}:${path_to_folder_ec2}
-```
-
+You need to modify your input path and fasta file path.
 ```
 ./vep ---format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /home/vagrant/data --input_file ../1KGP/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf
 ```
@@ -651,6 +626,8 @@ sbt assembly
 ```
 
 ### 3. Test VASpark
+You also need to modify your input path and fasta file path.
+
 ```bash
-(time spark-submit --master yarn --deploy-mode cluster --conf spark.yarn.archive=hdfs:///user/vagrant/spark-libs.jar --conf spark.driver.memoryOverhead=2048 --conf spark.executor.memoryOverhead=2048 --executor-memory 4g --num-executors 4 --executor-cores 2 /home/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar --vep_dir /home/vagrant/ensembl-vep/vep ---format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /home/vagrant/data --input_file ../1KGP/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf) &> time_vs_10gb_nop34_r8_non4_442.txt
+(time spark-submit --master yarn --deploy-mode cluster --conf spark.yarn.archive=hdfs:///user/vagrant/spark-libs.jar --conf spark.driver.memoryOverhead=8192 --conf spark.executor.memoryOverhead=8192 --executor-memory 16g --num-executors 8 --executor-cores 4 /home/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar --vep_dir /home/vagrant/ensembl-vep/vep ---format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /home/vagrant/data --input_file ../1KGP/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf) &> time_vs_10gb_nop34_r8_non4_442.txt
 ```
