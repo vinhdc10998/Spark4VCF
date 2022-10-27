@@ -1,4 +1,4 @@
-# Deploy VA Spark cluster using VMs on Virtualbox
+# Deploy VASpark cluster using VMs on Virtualbox
 
 Vagrant is a great tool when it comes to deploy multiple virtual machines that have the exact system resources and libraries as the current running machines in different environments. You can find out more information about Vagrant in [here](https://www.vagrantup.com/).
 
