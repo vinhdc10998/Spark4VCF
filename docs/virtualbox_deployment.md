@@ -660,3 +660,6 @@ spark-submit --executor-memory 14g --num-executors 16 --executor-cores 16 --mast
 spark-submit --executor-memory 14g --num-executors 16 --executor-cores 16 --master yarn --deploy-mode cluster "/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar" --annotation_tool "annovar" --tool_dir "/vagrant/annovar/" --tool_args "-vcfinput /vagrant/annovar/humandb/ -buildver hg38 -out test_annovar -protocol cytoBand,exac03 -operation r,f -nastring . -polish" --input_file /user/vagrant/variants_of_interest.vcf --output_file /output_vnchr22_toInt_5_annovar
 ```
 
+```
+time spark-submit --executor-memory 14g --num-executors 16 --executor-cores 16 --master local[*] "/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar" --annotation_tool "snpeff" --tool_dir "/vagrant/snpEff/snpEff.jar" --tool_args "-v -canon GRCh38.82" --input_file /user/vagrant/variants_of_interest.vcf --output_file /output_vnchr22_toInt_snpeff
+```
