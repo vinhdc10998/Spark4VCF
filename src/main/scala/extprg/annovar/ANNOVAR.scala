@@ -66,12 +66,14 @@ object ANNOVAR {
                       outputPath: String
                       ) {
     val txtRDDs = new ArrayBuffer[RDD[String]]()
+    print(outputPath + "." + suffix)
     txtRDDs += sc.textFile(prjTmpDir + "/0." + suffix)
     for (i <- 1 until numOfPartitions)
       if (new File(prjTmpDir + "/" + i.toString + "." + suffix).exists())
-        txtRDDs += sc.textFile(prjTmpDir + "/" + i.toString + "." + suffix).mapPartitionsWithIndex(
+        txtRDDs += sc.textFile("file:///"+prjTmpDir + "/" + i.toString + "." + suffix).mapPartitionsWithIndex(
           (index, iterator) => if (index == 0) iterator.drop(1) else iterator
         )
+    print(outputPath + "." + suffix)
     new UnionRDD(sc, txtRDDs)
       .coalesce(1)
       .saveAsSingleTextFile(outputPath + "." + suffix)
@@ -87,7 +89,7 @@ object ANNOVAR {
     val filePaths = new ArrayBuffer[String]
     for (i <- 0 until numOfPartitions) {
       val partFile = new File(prjTmpDir + "/" + i.toString + "." + suffix)
-      if (partFile.exists()) filePaths += partFile.getAbsolutePath
+      if (partFile.exists()) filePaths += "file:///"+partFile.getAbsolutePath
     }
     sc.textFile(filePaths.mkString(",")).saveAsSingleTextFile(outputPath + "." + suffix)
   }
@@ -103,8 +105,9 @@ object ANNOVAR {
     val filePaths = new ArrayBuffer[String]
     for (i <- 0 until numOfPartitions) {
       val partFile = new File(prjTmpDir + "/" + i.toString + "." + suffix)
-      if (partFile.exists()) filePaths += partFile.getAbsolutePath
+      if (partFile.exists()) filePaths += "file:///"+partFile.getAbsolutePath
     }
+    print(filePaths.mkString(","))
     headerRDD.union(sc.textFile(filePaths.mkString(","))).saveAsSingleTextFile(outputPath + "." + suffix)
   }
 
@@ -144,6 +147,7 @@ object ANNOVAR {
 
     // Merge output files
     for (suffix <- suffixList) {
+      print(suffix)
       suffix.substring(suffix.length - 3) match {
         case "txt" =>
           mergeTxtCsvFiles(
