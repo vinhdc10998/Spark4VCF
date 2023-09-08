@@ -4,6 +4,8 @@ import scopt.OParser
 import extprg.vep.VEP._
 import extprg.annovar.ANNOVAR._
 import extprg.snpeff.SNPEFF._
+import extprg.pypgx.PYPGX._
+import extprg.gatk.GATK._
 
 case class Config(
                    annotationTool: String = "",
@@ -46,7 +48,7 @@ object VASparkApplication extends App {
       help('h', "help").text("Print usage"),
       note(
         """
-          |
+          | You need to index all file input
           |   Examples:
           |    Annovar sample command:
           |     spark-submit \
@@ -79,11 +81,29 @@ object VASparkApplication extends App {
           |     -o /path/to/output/files/output.vcf \
           |     --tool_args "-v -canon GRCh37.99"
           |
+          |    PyPGX sample command:
+          |     spark-submit
+          |     --master local[*] \
+          |     /home/ubuntu/vaspark/target/scala-2.11/vaspark-0.1.jar \
+          |     --annotation_tool pypgx \
+          |     --tool_dir /path/to/snpeff/bin/pypgx run-ngs-pipeline CYP2D6 \ $ GENE
+          |     -i /path/to/vcf/file/sample.vcf \ path in hdfs
+          |     -o /path/to/output/ \
+          |     --tool_args "--variants /vagrant/vn1008.chr22.vcf.gz (path in local) --samples {} --assembly GRCh38"
           |
+          |
+          |    GATK sample command:
+          |     spark-submit
+          |     --master local[*] \
+          |     /home/ubuntu/vaspark/target/scala-2.11/vaspark-0.1.jar \
+          |     --annotation_tool gatk \
+          |     --tool_dir xargs -I {} /vagrant/tools/gatk-4.1.9.0/gatk --java-options -Xmx4g HaplotypeCaller
+          |     -i /vagrant/intervals_HG00131.list \ path in hdfs
+          |     -o /vagrant/gatk_3 \
+          |     --tool_args "-R /vagrant/Data/Bam/Homo_sapiens_assembly38.fasta -I /vagrant/Data/Bam/HG00131-1-0-1-0.sorted.hg38.test.bam.sorted.bam -O {}.output.vcf.gz   -ERC GVCF -L {}"
           |""".stripMargin
       )
     )
-
   }
 
   OParser.parse(mParser, args, Config()) match {
@@ -114,6 +134,20 @@ object VASparkApplication extends App {
           config.toolDir
         )
         case "snpeff" => annotateBySnpEff(
+          sc,
+          config.inputPath,
+          config.outputPath,
+          config.toolArgs,
+          config.toolDir
+        )
+        case "pypgx" => annotateByPypgx(
+          sc,
+          config.inputPath,
+          config.outputPath,
+          config.toolArgs,
+          config.toolDir
+        )
+        case "gatk" => annotateByGatk(
           sc,
           config.inputPath,
           config.outputPath,

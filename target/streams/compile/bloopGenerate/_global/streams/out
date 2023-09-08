@@ -1,0 +1,4 @@
+[debug] [va-spark] Classpath dependencies List()
+[debug] [va-spark] Dependencies from configurations List()
+[debug] Bloop wrote the configuration of project 'va-spark' to '/media/vinhdc/DATA/project/va-spark-vagrant/va-spark/.bloop/va-spark.json'
+[success] Generated .bloop/va-spark.json

@@ -11,20 +11,14 @@ object SNPEFF {
                      outputPath: String,
                      snpEffArgs: String,
                      snpEffJarPath: String) {
-    val annotateCmd = "java -Xmx8g -jar " + snpEffJarPath + " " + snpEffArgs
+    val annotateCmd = "java -jar " + snpEffJarPath + " " + snpEffArgs
     val vcfRDD = sc.textFile(inputPath)
     val (headerRDD, variantsRDD) = vcfRDD.filterDivisor(line => line.startsWith("#"))
 
-    val headRDD = headerRDD
-      .union(sc.parallelize(Seq(variantsRDD.first())))
-      .coalesce(1)
-      .pipe(annotateCmd)
+    val headRDD = headerRDD.coalesce(1)
 
     val tailRDD = variantsRDD
-      .coalesce(sc.defaultParallelism)
-      .mapPartitionsWithIndex((index, it) =>
-          if (index == 0) it.drop(1) else it,
-          preservesPartitioning = true)
+      .repartition(1000)
       .pipe(annotateCmd)
       .filter(line => !line.startsWith("#"))
 
