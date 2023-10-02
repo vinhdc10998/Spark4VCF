@@ -9,5 +9,4 @@ va-spark was created by the software development team at Vinbigdata's Biomedical
 ![va-spark integration flow](/data/img/va-spark_integration.png)
 
 ## Table of contents
-* [Deploy and run va-spark on AWS EC2 instances](/docs/aws_deployment.md)
 * [Deploy and run va-spark on local PC with virtualbox](/docs/virtualbox_deployment.md)
