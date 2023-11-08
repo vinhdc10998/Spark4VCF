@@ -141,15 +141,15 @@ And paste this to the end of the file:
 ```bash 
 /etc/hosts
 
-192.168.100.11 cluster1
-192.168.100.12 cluster2
-192.168.100.13 cluster3
-192.168.100.14 cluster4
+192.168.56.11 cluster1
+192.168.56.12 cluster2
+192.168.56.13 cluster3
+192.168.56.14 cluster4
 ```
 Now configure Open SSH server-client on master. To configure Open SSH server-client, run the following command:  
 
 ```
-$ sudo apt-get install openssh-server openssh-client
+sudo apt-get install openssh-server openssh-client
 ```
 
 Next step is to generate key pairs. For this purpose, run the following command:
@@ -160,16 +160,16 @@ ssh-keygen -t rsa -P ""
 Run the following command to authorize the key:
 
 ```
-$ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 Now copy the content of .ssh/id_rsa.pub form master to .ssh/authorized_keys (all the workers/slaves as well as master). Run the following commands:
 
 ```
-$ ssh-copy-id cluster2
+ssh-copy-id cluster2
 
-$ ssh-copy-id cluster3
+ssh-copy-id cluster3
 
-$ ssh-copy-id cluster4
+ssh-copy-id cluster4
 ```
 Note: user name and IP will be different of your machines. So, use accordingly.
 
@@ -580,27 +580,31 @@ Notes: when running with VEP, need to run hdfs dfsadmin -safemode leave to disab
 
 
 ## IV. VEP installation
-
-### 1. Install required packages
+Install in the share folder between nodes
+### 1. Install required packages on all 4 nodes
 
 ```bash
 sudo apt-get update
-sudo apt-get install libdbi-perl gcc libdbd-mysql-perl perl-base=5.26.1-6ubuntu0.5 gcc=4:7.4.0-1ubuntu2.3 g++=4:7.4.0-1ubuntu2.3 make=4.1-9.1ubuntu1 libbz2-dev=1.0.6-8.1ubuntu0.2 liblzma-dev=5.2.2-1.3 libpng-dev=1.6.34-1ubuntu0.18.04.2 uuid-dev=2.31.1-0.4ubuntu3.7 cpanminus libmysqlclient-dev mysql-server unzip=6.0-21ubuntu1.1 git make unzip libpng-dev uuid-dev bcftools
+sudo apt-get install libdbi-perl gcc libdbd-mysql-perl perl-base gcc=4:7.4.0-1ubuntu2.3 g++=4:7.4.0-1ubuntu2.3 make=4.1-9.1ubuntu1 libbz2-dev=1.0.6-8.1ubuntu0.2 liblzma-dev=5.2.2-1.3 libpng-dev=1.6.34-1ubuntu0.18.04.2 uuid-dev=2.31.1-0.4ubuntu3.7 cpanminus libmysqlclient-dev mysql-server  git make unzip libpng-dev uuid-dev bcftools liblzma5=5.2.2-1.3
 sudo cpanm Archive::Zip
 sudo cpanm Archive::Extract
 sudo cpanm DBD::mysql
 sudo cpanm Set::IntervalTree
 sudo cpanm JSON
 sudo cpanm PerlIO::gzip
-wget http://hgdownload.cse.ucsc.edu/admin/jksrc.zip
-unzip jksrc.zip
-cd kent/src/lib
-export MACHTYPE=i686
-make
-cd ..
-export KENT_SRC=`pwd`
-sudo cpanm Bio::DB::BigFile
-
+sudo cpanm Test::Warnings
+#wget http://hgdownload.cse.ucsc.edu/admin/jksrc.zip
+#unzip jksrc.zip
+#cd kent/src/lib
+#export MACHTYPE=i686
+#make
+#cd ..
+#export KENT_SRC=`pwd`
+#sudo cpanm Bio::DB::BigFile
+```
+install BigFile following this tutorial: 
+```
+https://asia.ensembl.org/info/docs/tools/vep/script/vep_download.html
 ```
 
 ### 2. Install vep version 100
@@ -620,13 +624,8 @@ perl INSTALL.pl
 - All else configs: Default
 
 ### 3. Test VEP
-Copy data file from local to AWS EC2 instance (EC2-AWS optional)
-```bash
-scp -i ${pem_file} ${path_to_data_file_local} ${user_name_ec2_machine}@${ec2_ip}:${path_to_folder_ec2}
 ```
-
-```
-./vep ---format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /home/vagrant/data --input_file ../1KGP/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf
+./vep --format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /home/vagrant/data --input_file ../1KGP/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf
 ```
 
 ## V. VASpark installation
@@ -652,5 +651,15 @@ sbt assembly
 
 ### 3. Test VASpark
 ```bash
-(time spark-submit --master yarn --deploy-mode cluster --conf spark.yarn.archive=hdfs:///user/vagrant/spark-libs.jar --conf spark.driver.memoryOverhead=2048 --conf spark.executor.memoryOverhead=2048 --executor-memory 4g --num-executors 4 --executor-cores 2 /home/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar --vep_dir /home/vagrant/ensembl-vep/vep ---format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /home/vagrant/data --input_file ../1KGP/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf) &> time_vs_10gb_nop34_r8_non4_442.txt
+(time spark-submit --master local[*] --conf spark.sql.shuffle.partitions=8 /home/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar --annotation_tool vep --tool_dir /home/vagrant/ensembl-vep/vep --tool_args "--format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /vagrant/Homo_sapiens_assembly38.fasta" --input_file /user/vagrant/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf) &> time_vs_10gb_nop34_r8_non4_442.txt
+```
+```
+spark-submit --executor-memory 14g --num-executors 16 --executor-cores 16 --master yarn --deploy-mode cluster "/home/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar" --annotation_tool "vep" --tool_dir "xargs -I {} /home/vagrant/ensembl-vep/vep" --tool_args "--cache --no_stats --force_overwrite --dir_cache /vagrant/.vep --offline --vcf --af --appris --biotype --buffer_size 500 --check_existing --distance 5000 --mane --polyphen b --pubmed --regulatory --sift b --species homo_sapiens --symbol --transcript_version --tsl --fasta /vagrant/Homo_sapiens_assembly38.fasta -i {} -o STDOUT" --input_file /user/vagrant/variants_of_interest.vcf --output_file /output_vnchr22_toInt_5.vcf.gz
+```
+```
+spark-submit --executor-memory 14g --num-executors 16 --executor-cores 16 --master yarn --deploy-mode cluster "/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar" --annotation_tool "annovar" --tool_dir "/vagrant/annovar/" --tool_args "-vcfinput /vagrant/annovar/humandb/ -buildver hg38 -out test_annovar -protocol cytoBand,exac03 -operation r,f -nastring . -polish" --input_file /user/vagrant/variants_of_interest.vcf --output_file /output_vnchr22_toInt_5_annovar
+```
+
+```
+time spark-submit --executor-memory 14g --num-executors 16 --executor-cores 16 --master local[*] "/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar" --annotation_tool "snpeff" --tool_dir "/vagrant/snpEff/snpEff.jar" --tool_args "-v -canon GRCh38.82" --input_file /user/vagrant/variants_of_interest.vcf --output_file /output_vnchr22_toInt_snpeff
 ```
