@@ -1,8 +1,8 @@
-# Deploy VASpark cluster using VMs on Virtualbox
+# Deploy Spark4VCF cluster using VMs on Virtualbox
 
 Vagrant is a great tool when it comes to deploy multiple virtual machines that have the exact system resources and libraries as the current running machines in different environments. You can find out more information about Vagrant in [here](https://www.vagrantup.com/).
 
-The prerequisites in order to deploy VA spark cluster in multiple VMs on your Virtualbox are:
+The prerequisites in order to deploy Spark4VCF cluster in multiple VMs on your Virtualbox are:
 
    1. Having installed Virtualbox setup in place.
 
@@ -31,7 +31,7 @@ touch bootstrap.sh
 ```
 Copy the following file to bootstrap.sh
 ```bash
-VAGRANT_HOME="/home/vagrant"
+GRANT_HOME="/home/grant"
 
 sudo apt-get -y update
 
@@ -45,19 +45,19 @@ sudo apt-get update
 sudo apt-get install -y openjdk-8-jdk
 ```
 
-### 3. Create vagrant script file
+### 3. Create grant script file
 
 ```bash
 cd ..
-touch Vagrantfile
+touch grantfile
 ```
-Copy the following content to Vagrant file
+Copy the following content to grant file
 
 ```bash
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.require_version">= 1.5.0"
+grant.require_version">= 1.5.0"
 
 ipAdrPrefix = "192.168.100.1"
 memTot = 30000  #hyperparameter
