@@ -628,7 +628,7 @@ perl INSTALL.pl
 ./vep --format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /home/vagrant/data --input_file ../1KGP/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf
 ```
 
-## V. VASpark installation
+## V. Spark4VCF installation
 
 ### 1. Install required packages
 
@@ -640,7 +640,7 @@ source "$HOME/.sdkman/bin/sdkman-init.sh"
 sdk install sbt 1.3.8
 ```
 
-### 2. Install VASpark
+### 2. Install Spark4VCF
 
 ```bash
 git clone https://github.com/variant-annotation/va-spark.git
@@ -649,7 +649,7 @@ git checkout fix/snpeff
 sbt assembly
 ```
 
-### 3. Test VASpark
+### 3. Test Spark4VCF
 ```bash
 (time spark-submit --master local[*] --conf spark.sql.shuffle.partitions=8 /home/vagrant/va-spark/target/scala-2.11/vaspark-0.1.jar --annotation_tool vep --tool_dir /home/vagrant/ensembl-vep/vep --tool_args "--format vcf --no_stats --force_overwrite --dir_cache /home/vagrant/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /vagrant/Homo_sapiens_assembly38.fasta" --input_file /user/vagrant/cyp3a7.vcf.gz --output_file f1_b60000_test.vcf) &> time_vs_10gb_nop34_r8_non4_442.txt
 ```
