@@ -8,5 +8,5 @@ Spark4VCF was created by the software development team at Vinbigdata's Biomedica
 
 ![Spark4VCF integration flow](/data/img/Spark4VCF.png)
 
-## Table of contents
+## Installation
 * [Deploy and run Spark4VCF on local PC with virtualbox](/docs/virtualbox_deployment.md)
