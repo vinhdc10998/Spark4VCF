@@ -141,10 +141,10 @@ And paste this to the end of the file:
 ```bash 
 /etc/hosts
 
-192.168.56.11 cluster1
-192.168.56.12 cluster2
-192.168.56.13 cluster3
-192.168.56.14 cluster4
+192.168.100.11 cluster1
+192.168.100.12 cluster2
+192.168.100.13 cluster3
+192.168.100.14 cluster4
 ```
 Now configure Open SSH server-client on master. To configure Open SSH server-client, run the following command:  
 
