@@ -45,13 +45,13 @@ sudo apt-get update
 sudo apt-get install -y openjdk-8-jdk
 ```
 
-### 3. Create grant script file
+### 3. Create vagrant script file
 
 ```bash
 cd ..
-touch grantfile
+touch vagrantfile
 ```
-Copy the following content to grant file
+Copy the following content to vagrant file
 
 ```bash
 # -*- mode: ruby -*-
@@ -466,15 +466,9 @@ Update firewall rules for port 50070 and port 8088 to be accessible.
 sudo ufw allow 50070
 sudo ufw allow 8088
 ```
-Then set up a security group for inbound rules value for ports `50070` and `8088` to be accessed from the internet (in this case from my IP address).
-
-![Jps console result for cluster 2,3,4](https://i.imgur.com/gr0juwE.png)
-
 By accessing `http://${cluster1}:50070` you should see the following HDFS web UI (where ${cluster_1} is the IP value you can retrieve from AWS console).
 
 ![Overview about the cluster](https://i.imgur.com/YjW73EA.png).
-
-![Running instances](https://i.imgur.com/B8EZ7md.png).
 
 By accessing `http://${cluster1}:8088` you should see the following YARN web UI.
 
