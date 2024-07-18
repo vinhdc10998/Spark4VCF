@@ -122,7 +122,7 @@ Below are the 4 nodes and their IP addresses I will be referring to here:
 
 You need to ssh to every node in the VMS in order to run the below commands
 ```bash
-vagrant ssh spark-node1
+vagrant ssh cluster1
 ```
 
 ### 1. Install SSH on **all nodes**
