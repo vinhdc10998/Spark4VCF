@@ -1,0 +1,77 @@
+#!/bin/bash
+# spark4vcf - Friendly wrapper for spark-submit + vaspark-0.1.jar
+# Usage: spark4vcf [spark-submit args] <tool> [tool args...]
+#
+# Example:
+#   spark4vcf --master local[*] vep -i /data/input.vcf -o /data/output.vcf --format vcf ...
+#   spark4vcf --master local[*] pypgx run-ngs-pipeline CYP2D6 /data/output --variants /data/variants.vcf.gz
+
+set -e
+
+VALID_TOOLS="vep annovar snpeff pypgx gatk deepvariant"
+
+is_valid_tool() {
+  for t in $VALID_TOOLS; do
+    [ "$t" = "$1" ] && return 0
+  done
+  return 1
+}
+
+SPARK_ARGS=()
+TOOL=""
+TOOL_ARGS=()
+
+# Split: accumulate spark args until we hit the tool name, then rest is tool args
+while [[ $# -gt 0 ]]; do
+  if [ -z "$TOOL" ] && is_valid_tool "$1"; then
+    TOOL="$1"
+  elif [ -z "$TOOL" ]; then
+    SPARK_ARGS+=("$1")
+  else
+    TOOL_ARGS+=("$1")
+  fi
+  shift
+done
+
+if [ -z "$TOOL" ]; then
+  echo "Error: No tool specified. Valid tools: $VALID_TOOLS"
+  echo ""
+  echo "Usage: spark4vcf [spark-submit args] <tool> [tool args...]"
+  echo ""
+  echo "Examples:"
+  echo "  spark4vcf --master local[*] vep -i /data/input.vcf -o /data/output.vcf --format vcf --no_stats ..."
+  echo "  spark4vcf --master local[*] pypgx run-ngs-pipeline CYP2D6 /data/out --variants /data/variants.vcf.gz"
+  exit 1
+fi
+
+# Locate the JAR — try next to this script first, then target/
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+JAR_PATH="$SCRIPT_DIR/vaspark-0.1.jar"
+if [ ! -f "$JAR_PATH" ]; then
+  JAR_PATH="$(find "$SCRIPT_DIR/target" -name "vaspark*.jar" 2>/dev/null | head -n 1)"
+fi
+if [ -z "$JAR_PATH" ] || [ ! -f "$JAR_PATH" ]; then
+  echo "Error: vaspark JAR not found. Please run ./install.sh first."
+  exit 1
+fi
+
+# Join TOOL_ARGS array into a single quoted string for --tool_args
+TOOL_ARGS_STR="${TOOL_ARGS[*]}"
+
+echo "[spark4vcf] Running tool: $TOOL"
+echo "[spark4vcf] Spark args:   ${SPARK_ARGS[*]}"
+echo "[spark4vcf] Tool args:    $TOOL_ARGS_STR"
+echo ""
+
+START_TIME="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "[spark4vcf] Start time:   $START_TIME"
+
+spark-submit \
+  "${SPARK_ARGS[@]}" \
+  "$JAR_PATH" \
+  --annotation_tool "$TOOL" \
+  --tool_dir "$TOOL" \
+  --tool_args "$TOOL_ARGS_STR"
+
+END_TIME="$(date '+%Y-%m-%d %H:%M:%S')"
+echo "[spark4vcf] End time:     $END_TIME"

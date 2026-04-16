@@ -1,0 +1,170 @@
+error id: file://<WORKSPACE>/src/main/scala/VASparkApplication.scala:annotateByAnnovar.
+file://<WORKSPACE>/src/main/scala/VASparkApplication.scala
+empty definition using pc, found symbol in pc: 
+empty definition using semanticdb
+empty definition using fallback
+non-local guesses:
+	 -extprg/vep/VEP.annotateByAnnovar.
+	 -extprg/vep/VEP.annotateByAnnovar#
+	 -extprg/vep/VEP.annotateByAnnovar().
+	 -extprg/annovar/ANNOVAR.annotateByAnnovar.
+	 -extprg/annovar/ANNOVAR.annotateByAnnovar#
+	 -extprg/annovar/ANNOVAR.annotateByAnnovar().
+	 -extprg/snpeff/SNPEFF.annotateByAnnovar.
+	 -extprg/snpeff/SNPEFF.annotateByAnnovar#
+	 -extprg/snpeff/SNPEFF.annotateByAnnovar().
+	 -extprg/pypgx/PYPGX.annotateByAnnovar.
+	 -extprg/pypgx/PYPGX.annotateByAnnovar#
+	 -extprg/pypgx/PYPGX.annotateByAnnovar().
+	 -extprg/gatk/GATK.annotateByAnnovar.
+	 -extprg/gatk/GATK.annotateByAnnovar#
+	 -extprg/gatk/GATK.annotateByAnnovar().
+	 -extprg/deepvariant/DeepVariant.annotateByAnnovar.
+	 -extprg/deepvariant/DeepVariant.annotateByAnnovar#
+	 -extprg/deepvariant/DeepVariant.annotateByAnnovar().
+	 -annotateByAnnovar.
+	 -annotateByAnnovar#
+	 -annotateByAnnovar().
+	 -scala/Predef.annotateByAnnovar.
+	 -scala/Predef.annotateByAnnovar#
+	 -scala/Predef.annotateByAnnovar().
+offset: 5339
+uri: file://<WORKSPACE>/src/main/scala/VASparkApplication.scala
+text:
+```scala
+import org.apache.log4j.{Level, Logger}
+import org.apache.spark.sql.SparkSession
+import scopt.OParser
+import extprg.vep.VEP._
+import extprg.annovar.ANNOVAR._
+import extprg.snpeff.SNPEFF._
+import extprg.pypgx.PYPGX._
+import extprg.gatk.GATK._
+import extprg.deepvariant.DeepVariant._
+
+
+case class Config(
+                   annotationTool: String = "",
+                   toolDir: String = "",
+                   // inputPath and outputPath removed — each tool parses its own I/O from toolArgs
+                   toolArgs: String = ""
+                 )
+
+object VASparkApplication extends App {
+
+  val builder = OParser.builder[Config]
+
+  // Handle arguments
+  val mParser = {
+    import builder._
+    OParser.sequence(
+      programName("vaspark"),
+      head("vaspark", "0.1"),
+      opt[String]("annotation_tool")
+        .required()
+        .action((x, c) => c.copy(annotationTool = x))
+        .text("Annotation tool name (example: vep, annovar, snpeff)"),
+      opt[String]("tool_dir")
+        .required()
+        .action((x, c) => c.copy(toolDir = x))
+        .text("Executable path"),
+      // -i and -o are no longer global args — each tool parses them from --tool_args
+      opt[String]("tool_args")
+        .optional()
+        .action((x, c) => c.copy(toolArgs = x))
+        .text("Annotation tool's arguments (must be quoted)"),
+      help('h', "help").text("Print usage"),
+      note(
+        """
+ You need to index all file input
+   Examples:
+    Annovar sample command:
+     spark-submit \
+     --master local[*] \
+     /home/ubuntu/vaspark/target/scala-2.11/vaspark-0.1.jar \
+     --annotation_tool annovar \
+     --tool_dir /path/to/annovar/ \
+     -i /path/to/vcf/file/sample.vcf \
+     -o /path/to/output/files/myanno \
+     --tool_args "/path/to/annovar/humandb/ -buildver hg19 -remove -protocol refGene,cytoBand,dbnsfp30a -operation g,r,f -nastring . -vcfinput"
+
+    Ensembl vep sample command:
+     spark-submit \
+     --master local[*] \
+     /home/ubuntu/vaspark/target/scala-2.11/vaspark-0.1.jar \
+     --annotation_tool vep \
+     --tool_dir /path/to/ensembl/vep \
+     -i /path/to/vcf/file/sample.vcf \
+     -o /path/to/output/files/output.vcf \
+     --tool_dir /path/to/ensembl/vep \
+     --tool_args "--format vcf --no_stats --force_overwrite --cache_dir /home/.vep --offline --vcf --vcf_info_field ANN --buffer_size 60000 --phased --hgvsg --hgvs --symbol --variant_class --biotype --gene_phenotype --regulatory --ccds --transcript_version --tsl --appris --canonical --protein --uniprot --domains --sift b --polyphen b --check_existing --af --max_af --af_1kg --af_gnomad --minimal --allele_number --pubmed --fasta /home/ubuntu/.vep/homo_sapiens/100_GRCh38/Homo_sapiens.GRCh38.dna.toplevel.fa.gz "
+
+    SnpEff sample command:
+     spark-submit
+     --master local[*] \
+     /home/ubuntu/vaspark/target/scala-2.11/vaspark-0.1.jar \
+     --annotation_tool snpeff \
+     --tool_dir /path/to/snpeff/snpeff.jar \
+     -i /path/to/vcf/file/sample.vcf \
+     -o /path/to/output/files/output.vcf \
+     --tool_args "-v -canon GRCh37.99"
+
+    PyPGX sample command:
+     spark-submit
+     --master local[*] \
+     /home/ubuntu/vaspark/target/scala-2.11/vaspark-0.1.jar \
+     --annotation_tool pypgx \
+     --tool_dir /path/to/snpeff/bin/pypgx run-ngs-pipeline CYP2D6 \ $ GENE
+     -i /path/to/vcf/file/sample.vcf \ path in hdfs
+     -o /path/to/output/ \
+     --tool_args "--variants /vagrant/vn1008.chr22.vcf.gz (path in local) --samples {} --assembly GRCh38"
+
+
+    GATK sample command:
+     spark-submit
+     --master local[*] \
+     /home/ubuntu/vaspark/target/scala-2.11/vaspark-0.1.jar \
+     --annotation_tool gatk \
+     --tool_dir xargs -I {} /vagrant/tools/gatk-4.1.9.0/gatk --java-options -Xmx4g HaplotypeCaller
+     -i /vagrant/intervals_HG00131.list \ path in hdfs
+     -o /vagrant/gatk_3 \
+     --tool_args "-R /vagrant/Data/Bam/Homo_sapiens_assembly38.fasta -I /vagrant/Data/Bam/HG00131-1-0-1-0.sorted.hg38.test.bam.sorted.bam -O {}.output.vcf.gz   -ERC GVCF -L {}"
+""".stripMargin
+      )
+    )
+  }
+
+  OParser.parse(mParser, args, Config()) match {
+    case Some(config) =>
+
+      // Set log level to STDERR
+      Logger.getLogger("org.apache.spark").setLevel(Level.ERROR)
+
+      // Initialize Spark Application
+      val spark = SparkSession.builder()
+        .appName("VASpark Application")
+        .getOrCreate()
+      val sc = spark.sparkContext
+
+      // Each tool receives (sc, toolArgs, toolDir) and parses its own input/output
+      config.annotationTool match {
+        case "vep"         => annotateByVep(sc, config.toolArgs, config.toolDir)
+        case "annovar"     => annotateByAnno@@var(sc, config.toolArgs, config.toolDir)
+        case "snpeff"      => annotateBySnpEff(sc, config.toolArgs, config.toolDir)
+        case "pypgx"       => annotateByPypgx(sc, config.toolArgs, config.toolDir)
+        case "gatk"        => annotateByGatk(sc, config.toolArgs, config.toolDir)
+        case "deepvariant" => callingByDeepVariant(sc, config.toolArgs, config.toolDir)
+        case unknown       => println(s"[spark4vcf] Unknown tool: $unknown")
+      }
+    case _ =>
+      // arguments are bad, error message will have been displayed
+  }
+}
+
+
+```
+
+
+#### Short summary: 
+
+empty definition using pc, found symbol in pc: 

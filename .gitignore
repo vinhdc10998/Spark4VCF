@@ -7,6 +7,9 @@
 node_modules/
 dist/
 __pycache__/
+output/
+experiments/
+tools/
 
 # Compiled Java class files
 *.class
@@ -49,3 +52,6 @@ Thumbs.db
 *.mov
 *.wmv
 
+# pixi environments
+.pixi/*
+!.pixi/config.toml

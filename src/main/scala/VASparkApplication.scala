@@ -6,12 +6,13 @@ import extprg.annovar.ANNOVAR._
 import extprg.snpeff.SNPEFF._
 import extprg.pypgx.PYPGX._
 import extprg.gatk.GATK._
+import extprg.deepvariant.DeepVariant._
+
 
 case class Config(
                    annotationTool: String = "",
                    toolDir: String = "",
-                   inputPath: String = "",
-                   outputPath: String = "",
+                   // inputPath and outputPath removed — each tool parses its own I/O from toolArgs
                    toolArgs: String = ""
                  )
 
@@ -33,14 +34,7 @@ object VASparkApplication extends App {
         .required()
         .action((x, c) => c.copy(toolDir = x))
         .text("Executable path"),
-      opt[String]('i', "input_file")
-        .required()
-        .action((x, c) => c.copy(inputPath = x))
-        .text("Path to input file (should be absolute)"),
-      opt[String]('o', "output_file")
-        .required()
-        .action((x, c) => c.copy(outputPath = x))
-        .text("Path to output file (should be absolute)"),
+      // -i and -o are no longer global args — each tool parses them from --tool_args
       opt[String]("tool_args")
         .optional()
         .action((x, c) => c.copy(toolArgs = x))
@@ -118,42 +112,15 @@ object VASparkApplication extends App {
         .getOrCreate()
       val sc = spark.sparkContext
 
+      // Each tool receives (sc, toolArgs, toolDir) and parses its own input/output
       config.annotationTool match {
-        case "vep" => annotateByVep(
-          sc,
-          config.inputPath,
-          config.outputPath,
-          config.toolArgs,
-          config.toolDir
-        )
-        case "annovar" => annotateByAnnovar(
-          sc,
-          config.inputPath,
-          config.outputPath,
-          config.toolArgs,
-          config.toolDir
-        )
-        case "snpeff" => annotateBySnpEff(
-          sc,
-          config.inputPath,
-          config.outputPath,
-          config.toolArgs,
-          config.toolDir
-        )
-        case "pypgx" => annotateByPypgx(
-          sc,
-          config.inputPath,
-          config.outputPath,
-          config.toolArgs,
-          config.toolDir
-        )
-        case "gatk" => annotateByGatk(
-          sc,
-          config.inputPath,
-          config.outputPath,
-          config.toolArgs,
-          config.toolDir
-        )
+        case "vep"         => annotateByVep(sc, config.toolArgs, config.toolDir)
+        case "annovar"     => annotateByAnnovar(sc, config.toolArgs, config.toolDir)
+        case "snpeff"      => annotateBySnpEff(sc, config.toolArgs, config.toolDir)
+        case "pypgx"       => annotateByPypgx(sc, config.toolArgs, config.toolDir)
+        case "gatk"        => annotateByGatk(sc, config.toolArgs, config.toolDir)
+        case "deepvariant" => callingByDeepVariant(sc, config.toolArgs, config.toolDir)
+        case unknown       => println(s"[spark4vcf] Unknown tool: $unknown")
       }
     case _ =>
       // arguments are bad, error message will have been displayed

@@ -4,8 +4,6 @@ version := "0.1"
 
 val sparkVersion = "2.4.0"
 
-// We will use Scala 2.11.x because many of Scala libraries such as
-// Spark, vegas-viz are not yet supported for Scala 2.12.x
 scalaVersion := "2.11.12"
 
 libraryDependencies ++= Seq(
@@ -22,10 +20,10 @@ libraryDependencies ++= Seq(
 //  "org.scalatest" %% "scalatest" % "3.0.5" % "test" // Scala test library
 )
 
-assemblyMergeStrategy in assembly := {
+// sbt-assembly 2.x uses ThisBuild scoped assemblyMergeStrategy
+ThisBuild / assemblyMergeStrategy := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
   case x => MergeStrategy.first
 }
 
-assemblyJarName in assembly := "vaspark-0.1.jar"
-
+assemblyJarName := "vaspark-0.1.jar"

@@ -1,0 +1,41 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version">= 1.5.0"
+VAGRANT_EXPERIMENTAL="disks"
+
+ipAdrPrefix = "192.168.100.1"
+memTot = 16000  #hyperparameter
+numNodes = 4
+memory = 16000
+cpuCap = 100/numNodes
+
+Vagrant.configure(2) do |config|
+	#config.disksize.size = '100GB'
+	r = numNodes..1
+	config.vm.synced_folder "/mnt/nas/earth/vinhdt17/spark4vcf/Data", "/data"
+	config.vm.synced_folder "/home/vinhdt17/Spark4VCF", "/spark4vcf"
+
+	(r.first).downto(r.last).each do |i|
+		config.vm.define "cluster#{i}" do |node|
+			#node.vm.box = "hashicorp/precise64"
+			node.vm.box = "generic/ubuntu2004"
+			node.vm.provider "virtualbox" do |v|
+				v.name = "cluster#{i}"
+				v.customize ["modifyvm", :id, "--cpuexecutioncap", cpuCap]
+				v.customize ["modifyvm", :id, "--memory", memory.to_s]
+				v.customize ["modifyvm", :id, "--cpus", 3]
+				v.customize ["modifyvm", :id, "--usb", "off"]
+				v.customize ["modifyvm", :id, "--usbehci", "off"]
+			end
+			node.vm.network "private_network", ip: "#{ipAdrPrefix}#{i}"
+			node.vm.hostname = "cluster#{i}"
+			node.vm.provision "shell" do |s|
+				s.path = "./scripts/bootstrap.sh"
+				s.args = "#{i} #{numNodes} #{ipAdrPrefix}"
+				s.privileged = false
+			end
+		end
+	end
+end
+

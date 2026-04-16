@@ -1,4 +1,4 @@
-[0m[[0m[31merror[0m] [0m[0m/vagrant/va-spark/src/main/scala/extprg/gatk/gatk.scala:26:30: not found: value intevrals[0m
-[0m[[0m[31merror[0m] [0m[0m    val numberOfPartitions = intevrals.size/numberOfInterals[0m
-[0m[[0m[31merror[0m] [0m[0m                             ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
+[0m[[0m[33mwarn[0m] [0m[0m/spark4vcf/src/main/scala/extprg/vep/VEP.scala:125:9: A try without a catch or finally is equivalent to putting its body in a block; no exceptions are handled.[0m
+[0m[[0m[33mwarn[0m] [0m[0m        try {[0m
+[0m[[0m[33mwarn[0m] [0m[0m        ^[0m
+[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m
