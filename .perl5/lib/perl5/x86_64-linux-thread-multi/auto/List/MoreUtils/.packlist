@@ -1,0 +1,9 @@
+/spark4vcf/.perl5/lib/perl5/List/MoreUtils.pm
+/spark4vcf/.perl5/lib/perl5/List/MoreUtils/Contributing.pod
+/spark4vcf/.perl5/lib/perl5/List/MoreUtils/PP.pm
+/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/List/MoreUtils.pm relocate_as=../../../../../site_perl/List/MoreUtils.pm
+/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/List/MoreUtils/Contributing.pod relocate_as=../../../../../site_perl/List/MoreUtils/Contributing.pod
+/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/List/MoreUtils/PP.pm relocate_as=../../../../../site_perl/List/MoreUtils/PP.pm
+/spark4vcf/.pixi/envs/default/man/man3/List::MoreUtils.3 relocate_as=../../../../../../../man/man3/List::MoreUtils.3
+/spark4vcf/.pixi/envs/default/man/man3/List::MoreUtils::Contributing.3 relocate_as=../../../../../../../man/man3/List::MoreUtils::Contributing.3
+/spark4vcf/.pixi/envs/default/man/man3/List::MoreUtils::PP.3 relocate_as=../../../../../../../man/man3/List::MoreUtils::PP.3

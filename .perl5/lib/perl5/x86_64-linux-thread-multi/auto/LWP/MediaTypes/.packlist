@@ -1,0 +1,5 @@
+/spark4vcf/.perl5/lib/perl5/LWP/MediaTypes.pm
+/spark4vcf/.perl5/lib/perl5/LWP/media.types
+/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/LWP/MediaTypes.pm relocate_as=../../../../../site_perl/LWP/MediaTypes.pm
+/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/LWP/media.types relocate_as=../../../../../site_perl/LWP/media.types
+/spark4vcf/.pixi/envs/default/man/man3/LWP::MediaTypes.3 relocate_as=../../../../../../../man/man3/LWP::MediaTypes.3

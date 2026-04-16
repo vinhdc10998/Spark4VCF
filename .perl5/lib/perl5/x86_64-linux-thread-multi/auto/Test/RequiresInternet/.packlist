@@ -1,0 +1,3 @@
+/spark4vcf/.perl5/lib/perl5/Test/RequiresInternet.pm
+/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/Test/RequiresInternet.pm relocate_as=../../../../../site_perl/Test/RequiresInternet.pm
+/spark4vcf/.pixi/envs/default/man/man3/Test::RequiresInternet.3 relocate_as=../../../../../../../man/man3/Test::RequiresInternet.3

@@ -1,0 +1,3 @@
+/spark4vcf/.perl5/lib/perl5/IO/String.pm
+/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/IO/String.pm relocate_as=../../../../../site_perl/IO/String.pm
+/spark4vcf/.pixi/envs/default/man/man3/IO::String.3 relocate_as=../../../../../../../man/man3/IO::String.3

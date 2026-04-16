@@ -64,7 +64,7 @@ object ANNOVAR {
                       suffix: String,
                       prjTmpDir: String,
                       outputPath: String
-                      ) {
+                      ): Unit = {
     val txtRDDs = new ArrayBuffer[RDD[String]]()
     print(outputPath + "." + suffix)
     txtRDDs += sc.textFile(prjTmpDir + "/0." + suffix)
@@ -85,7 +85,7 @@ object ANNOVAR {
                   suffix: String,
                   prjTmpDir: String,
                   outputPath: String
-                ) {
+                ): Unit = {
     val filePaths = new ArrayBuffer[String]
     for (i <- 0 until numOfPartitions) {
       val partFile = new File(prjTmpDir + "/" + i.toString + "." + suffix)
@@ -101,7 +101,7 @@ object ANNOVAR {
                      prjTmpDir: String,
                      outputPath: String,
                      headerRDD: RDD[String]
-                   ) {
+                   ): Unit = {
     val filePaths = new ArrayBuffer[String]
     for (i <- 0 until numOfPartitions) {
       val partFile = new File(prjTmpDir + "/" + i.toString + "." + suffix)
@@ -113,10 +113,16 @@ object ANNOVAR {
 
   def annotateByAnnovar(
                          sc: SparkContext,
-                         inputPath: String,
-                         outputPath: String,
-                         annovarArgs: String,
-                         execDir: String) {
+                         toolArgs: String,
+                         execDir: String): Unit = {
+    // TODO: Parse input/output from toolArgs (to be implemented)
+    // For now, keep backward-compatible extraction assuming -i and -out flags
+    val tokens = toolArgs.split("\\s+")
+    val iIdx = tokens.indexOf("-i")
+    val outIdx = tokens.indexOf("-out")
+    val inputPath  = if (iIdx   >= 0 && iIdx   + 1 < tokens.length) tokens(iIdx   + 1) else ""
+    val outputPath = if (outIdx >= 0 && outIdx + 1 < tokens.length) tokens(outIdx + 1) else ""
+    val annovarArgs = toolArgs
 
     // Prepare a temporary directory to save annovar output files
     val tmpDirName = "vaspark_tmp"

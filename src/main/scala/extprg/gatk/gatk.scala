@@ -16,10 +16,15 @@ import utils.CustomOperators.RDDOperators
 object GATK {
   def annotateByGatk(
                      sc: SparkContext,
-                     inputPath: String,
-                     outputPath: String,
-                     gatkArgs: String,
-                     execDir: String) { 
+                     toolArgs: String,
+                     execDir: String): Unit = {
+    // TODO: Parse input/output fully (to be implemented)
+    val tokens = toolArgs.split("\\s+")
+    val iIdx = tokens.indexOf("-I")
+    val oIdx = tokens.indexOf("-O")
+    val inputPath  = if (iIdx >= 0 && iIdx + 1 < tokens.length) tokens(iIdx + 1) else ""
+    val outputPath = if (oIdx >= 0 && oIdx + 1 < tokens.length) tokens(oIdx + 1) else ""
+    val gatkArgs = toolArgs
     val annotateCmd = execDir + gatkArgs
     val intervals = Source.fromFile(inputPath).getLines.toList
     val numberOfInterals: Long = 3
