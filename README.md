@@ -36,6 +36,9 @@ The architecture of Spark4VCF is shown in the following figure:
 | 💊 **PyPGx integration** | Distributed pharmacogenomics analysis per sample batch |
 | 🔬 **GATK integration** | Parallelized interval-based variant calling with HaplotypeCaller |
 | 🖥️ **Unified CLI** | Single `spark4vcf` entry point for all supported tools |
+| 🚧 **ANNOVAR** *(in development)* | Spark-based wrapper for ANNOVAR annotation |
+| 🚧 **DeepVariant** *(in development)* | Distributed deep learning variant calling with DeepVariant |
+| 🚧 **SnpEff** *(in development)* | Parallel functional variant annotation with SnpEff |
 
 ---
 
@@ -81,7 +84,7 @@ pixi install -e vep108
 
 ### Deploy on a Local Cluster (VirtualBox)
 
-For a multi-node Spark cluster on your local PC using VirtualBox and Vagrant:
+Since we don't have multiple physical machines to build a full cluster, we simulate a multi-node Spark cluster by running Virtual Machines (VMs) using [VirtualBox](https://www.virtualbox.org/) and [Vagrant](https://www.vagrantup.com/). This approach lets us develop, test, and benchmark Spark4VCF on a realistic distributed setup from a single PC.
 
 - 📄 [VirtualBox Deployment Guide](./docs/virtualbox_deployment.md)
 
@@ -219,7 +222,6 @@ Spark4VCF/
 │       ├── snpeff/       # SnpEff Spark wrapper
 │       ├── annovar/      # ANNOVAR Spark wrapper
 │       └── deepvariant/  # DeepVariant Spark wrapper
-├── experiments/          # Benchmark scripts (VEP, PyPGx, GATK)
 ├── docs/                 # Deployment guides (VirtualBox, AWS)
 ├── scripts/              # Cluster bootstrap scripts
 ├── ansible/              # Ansible playbooks for cluster setup
