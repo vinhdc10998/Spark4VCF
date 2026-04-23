@@ -8,7 +8,6 @@ node_modules/
 dist/
 __pycache__/
 output/
-experiments/
 tools/
 data/CCDG*
 # Compiled Java class files
@@ -54,4 +53,5 @@ Thumbs.db
 
 # pixi environments
 .pixi/*
+.vagrant/*
 !.pixi/config.toml
