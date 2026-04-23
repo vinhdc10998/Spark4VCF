@@ -10,7 +10,7 @@ __pycache__/
 output/
 experiments/
 tools/
-
+data/CCDG*
 # Compiled Java class files
 *.class
 

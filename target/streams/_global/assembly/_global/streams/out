@@ -1,24 +1,24 @@
 [0m[[0m[0mdebug[0m] [0m[0mSeparate classpath projects and all dependencies start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mSeparate classpath projects and all dependencies end. Took 3 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mSeparate classpath projects and all dependencies end. Took 5 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mCollect only external dependencies start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mCollect only external dependencies end. Took 1 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mCollect only external dependencies end. Took 0 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mCollect excluded jar names start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mCollect excluded jar names end. Took 0 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mCollect excluded jar names end. Took 1 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mFilter jars start:[0m
 [0m[[0m[0mdebug[0m] [0m[0mFilter jars end. Took 1 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mCollect and shade project classes start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mCollect and shade project classes end. Took 9 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mCollect and shade project classes end. Took 22 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mCollect and shade dependency entries start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mCollect and shade dependency entries end. Took 105 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mCollect and shade dependency entries end. Took 142 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mCollect renames start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mCollect renames end. Took 120 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mCollect renames end. Took 167 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mProcess renames start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mProcess renames end. Took 196 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mProcess renames end. Took 214 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mCollect all merge strategies for cache check start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mCollect all merge strategies for cache check end. Took 102 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mCollect all merge strategies for cache check end. Took 188 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mBuilding assembly jar due to changed inputs...[0m
 [0m[[0m[0mdebug[0m] [0m[0mMerge all conflicting jar entries (including those renamed) start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mMerge all conflicting jar entries (including those renamed) end. Took 307 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mMerge all conflicting jar entries (including those renamed) end. Took 211 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mReport merge results start:[0m
 [0m[[0m[0minfo[0m] [0m[0m2 file(s) merged using strategy 'Discard' (Run the task at debug level to see the details)[0m
 [0m[[0m[0mdebug[0m] [0m[0m[0m
@@ -28,16 +28,16 @@
 [0m[[0m[0mdebug[0m] [0m[0mMerge origins:[0m
 [0m[[0m[0mdebug[0m] [0m[0m  Jar name = scopt_2.11-4.0.0.jar, jar org = com.github.scopt, entry target = META-INF/MANIFEST.MF[0m
 [0m[[0m[0mdebug[0m] [0m[0m  Jar name = scala-library-2.11.12.jar, jar org = org.scala-lang, entry target = META-INF/MANIFEST.MF[0m
-[0m[[0m[0mdebug[0m] [0m[0mReport merge results end. Took 7 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mReport merge results end. Took 54 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mFinding remaining conflicts that were not merged start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mFinding remaining conflicts that were not merged end. Took 546 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mFinding remaining conflicts that were not merged end. Took 750 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mSort/Parallelize merged entries start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mSort/Parallelize merged entries end. Took 177 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mSort/Parallelize merged entries end. Took 17 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mCreate jar start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mCreate jar end. Took 4874 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mCreate jar end. Took 5588 ms[0m
 [0m[[0m[0mdebug[0m] [0m[0mHash newly-built Jar start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mHash newly-built Jar end. Took 187 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mHash newly-built Jar end. Took 247 ms[0m
 [0m[[0m[0minfo[0m] [0m[0mBuilt: /spark4vcf/target/scala-2.11/vaspark-0.1.jar[0m
-[0m[[0m[0minfo[0m] [0m[0mJar hash: c4c62ac9c311bef299dde129c5eaeb7448d28391[0m
+[0m[[0m[0minfo[0m] [0m[0mJar hash: ddceaac472921a42f8cf86cb34662c625c31932d[0m
 [0m[[0m[0mdebug[0m] [0m[0mClose library jar references start:[0m
-[0m[[0m[0mdebug[0m] [0m[0mClose library jar references end. Took 76 ms[0m
+[0m[[0m[0mdebug[0m] [0m[0mClose library jar references end. Took 3 ms[0m

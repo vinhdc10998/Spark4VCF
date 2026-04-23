@@ -2,27 +2,27 @@
 [0m[[0m[0mdebug[0m] [0m[0mIncrementalCompile.incrementalCompile[0m
 [0m[[0m[0mdebug[0m] [0m[0mprevious = Stamps for: 112 products, 8 sources, 7 libraries[0m
 [0m[[0m[0mdebug[0m] [0m[0mcurrent source = Set(${BASE}/src/main/scala/extprg/deepvariant/deepvariant.scala, ${BASE}/src/main/scala/utils/CustomOperators.scala, ${BASE}/src/main/scala/extprg/snpeff/SNPEFF.scala, ${BASE}/src/main/scala/VASparkApplication.scala, ${BASE}/src/main/scala/extprg/pypgx/pypgx.scala, ${BASE}/src/main/scala/extprg/gatk/gatk.scala, ${BASE}/src/main/scala/extprg/annovar/ANNOVAR.scala, ${BASE}/src/main/scala/extprg/vep/VEP.scala)[0m
-[0m[[0m[0mdebug[0m] [0m[0m> initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(${BASE}/src/main/scala/extprg/gatk/gatk.scala), unmodified = ...),Set(),Set(),API Changes: Set())[0m
+[0m[[0m[0mdebug[0m] [0m[0m> initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(${BASE}/src/main/scala/extprg/pypgx/pypgx.scala), unmodified = ...),Set(),Set(),API Changes: Set())[0m
 [0m[[0m[0mdebug[0m] [0m[0m[0m
 [0m[[0m[0mdebug[0m] [0m[0mInitial source changes:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	removed: Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0m	added: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0m	modified: Set(${BASE}/src/main/scala/extprg/gatk/gatk.scala)[0m
+[0m[[0m[0mdebug[0m] [0m[0m	modified: Set(${BASE}/src/main/scala/extprg/pypgx/pypgx.scala)[0m
 [0m[[0m[0mdebug[0m] [0m[0mInvalidated products: Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0mExternal API changes: API Changes: Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0mModified binary dependencies: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0mInitial directly invalidated classes: Set(extprg.gatk.GATK)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial directly invalidated classes: Set(extprg.pypgx.PYPGX)[0m
 [0m[[0m[0mdebug[0m] [0m[0mSources indirectly invalidated by:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	product: Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0m	binary dep: Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0m	external source: Set()[0m
-[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated classes: Set(extprg.gatk.GATK)[0m
-[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated sources:Set(${BASE}/src/main/scala/extprg/gatk/gatk.scala)[0m
-[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: extprg.gatk.GATK[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated classes: Set(extprg.pypgx.PYPGX)[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll initially invalidated sources:Set(${BASE}/src/main/scala/extprg/pypgx/pypgx.scala)[0m
+[0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: extprg.pypgx.PYPGX[0m
 [0m[[0m[0mdebug[0m] [0m[0mcompilation cycle 1[0m
 [0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to /spark4vcf/target/scala-2.11/classes ...[0m
 [0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.11:1.9.6:compile for Scala 2.11.12[0m
-[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 49127c1e for Scala compiler version 2.11.12[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 51f2a237 for Scala compiler version 2.11.12[0m
 [0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
 [0m[[0m[0mdebug[0m] [0m[0m	/spark4vcf/.pixi/envs/default/jre/lib/resources.jar:/spark4vcf/.pixi/envs/default/jre/lib/rt.jar:/spark4vcf/.pixi/envs/default/jre/lib/sunrsasign.jar:/spark4vcf/.pixi/envs/default/jre/lib/jsse.jar:/spark4vcf/.pixi/envs/default/jre/lib/jce.jar:/spark4vcf/.pixi/envs/default/jre/lib/charsets.jar:/spark4vcf/.pixi/envs/default/jre/lib/jfr.jar:/spark4vcf/.pixi/envs/default/jre/lib/cat.jar:/spark4vcf/.pixi/envs/default/jre/classes:/home/vagrant/.cache/coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/scala-library/2.11.12/scala-library-2.11.12.jar[0m
@@ -34,5 +34,5 @@
 [0m[[0m[0mdebug[0m] [0m[0mFinal step, transitive dependencies:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0mNo classes were invalidated.[0m
-[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 41.280662714 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 38.542436399 s[0m
 [0m[[0m[0mdebug[0m] [0m[0mdone compiling[0m

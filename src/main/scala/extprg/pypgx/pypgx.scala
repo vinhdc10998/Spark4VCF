@@ -13,8 +13,19 @@ object PYPGX {
    */
   private def parseFlag(flag: String, args: String): Option[String] = {
     val tokens = args.split("\\s+")
-    val idx = tokens.indexOf(flag)
-    if (idx >= 0 && idx + 1 < tokens.length) Some(tokens(idx + 1)) else None
+    val idx = tokens.indexWhere(t => t == flag || t.startsWith(s"$flag="))
+    if (idx >= 0) {
+      val token = tokens(idx)
+      if (token == flag && idx + 1 < tokens.length) {
+        Some(tokens(idx + 1))
+      } else if (token.startsWith(s"$flag=")) {
+        Some(token.substring(flag.length + 1))
+      } else {
+        None
+      }
+    } else {
+      None
+    }
   }
 
   /**
@@ -48,9 +59,11 @@ object PYPGX {
   def annotateByPypgx(sc: SparkContext, pyPGXArgs: String, execDir: String): Unit = {
 
     // --- Parse local input/output from tool args ---
-    val localVariantsPath = parsePositionalVcf(pyPGXArgs)
+    val localVariantsPath = parseFlag("--variants", pyPGXArgs)
       .getOrElse {
-        throw new IllegalArgumentException("[PyPGX] Missing positional VCF path in tool args")
+        parsePositionalVcf(pyPGXArgs).getOrElse {
+          throw new IllegalArgumentException("[PyPGX] Missing variants input (use --variants or positional VCF path)")
+        }
       }
     val localOutputDir = parsePositionalOutput(pyPGXArgs).getOrElse {
       throw new IllegalArgumentException("[PyPGX] Could not determine output directory from positional args")
