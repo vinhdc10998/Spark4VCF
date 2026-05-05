@@ -96,6 +96,28 @@ Since we don't have multiple physical machines to build a full cluster, we simul
 
 ## 4. Usage
 
+### Setting Up External Tool Paths
+
+Spark4VCF relies on several external bioinformatics tools (`vep`, `gatk`, `pypgx`, `bcftools`, `samtools`). By default, it expects these tools to be available in your system's `$PATH`.
+
+In a distributed cluster, you have two options:
+1. **Install tools on every node:** Ensure the tools are installed and in the `$PATH` on all worker nodes.
+2. **Use a shared network path:** If you have a shared filesystem (like NFS) accessible by all nodes, you only need to define the paths on the **driver node** before running Spark4VCF. Spark will automatically serialize and distribute these paths to the worker nodes!
+
+To use custom or shared paths, export the following environment variables on your driver node before submitting your job:
+```bash
+# Example using a shared network path accessible to all nodes
+export VEP_BIN=/shared/nfs/bin/vep
+export GATK_BIN=/shared/nfs/bin/gatk
+export PYPGX_BIN=/shared/nfs/bin/pypgx
+export BCFTOOLS_BIN=/shared/nfs/bin/bcftools
+export SAMTOOLS_BIN=/shared/nfs/bin/samtools
+```
+
+*Note: You have to verify your local tools are availabel, or correctly set up by running the `./install.sh` script, which includes a pre-flight environment check.*
+
+---
+
 The `spark4vcf` CLI is a friendly wrapper around `spark-submit`. It auto-locates the built JAR and routes arguments to the correct tool.
 
 ```
@@ -106,107 +128,13 @@ spark4vcf [spark-submit-args] <tool> [tool-args...]
 
 ---
 
-### 4.1 VEP — Variant Effect Predictor
+### Documentation for Tools
 
-Annotates variants in a VCF file using [Ensembl VEP](https://www.ensembl.org/vep), distributed across Spark partitions (default: 2500 variants/partition).
+Detailed documentation for running each supported tool via Spark4VCF can be found below:
 
-**Syntax:**
-```bash
-spark4vcf [spark-args] vep \
-  --offline --cache --no_stats \
-  --force_overwrite \
-  --dir_cache /path/to/vep_cache \
-  --vcf --af --appris --biotype \
-  --buffer_size 500 --check_existing --distance 5000 \
-  --mane --polyphen b --pubmed --regulatory \
-  --sift b --species homo_sapiens \
-  --symbol --transcript_version --tsl \
-  -i /data/input.vcf.gz \
-  -o /data/output.vep.vcf.gz
-```
-
-**Example (local mode):**
-```bash
-spark4vcf --master local[*] vep \
-  --offline --cache --no_stats --force_overwrite \
-  --dir_cache /spark4vcf/tools/ensembl-vep/ \
-  --vcf --af --appris --biotype \
-  --buffer_size 500 --check_existing --distance 5000 \
-  --mane --polyphen b --pubmed --regulatory \
-  --sift b --species homo_sapiens \
-  --symbol --transcript_version --tsl \
-  -i /data/1KGP.chr22.900000.vcf.gz \
-  -o /data/output/1KGP.chr22.vep.vcf.gz
-```
-
-**How it works:**
-1. The input VCF is uploaded to HDFS (if local).
-2. The header is extracted and variant lines are partitioned into chunks of 2500 (can modify and rebuild).
-3. Each Spark task runs VEP on its chunk, writing output to STDOUT.
-4. Results are merged back into a single output file (local or HDFS).
-
----
-
-### 4.2 PyPGx — Pharmacogenomics Analysis
-
-Runs [PyPGx](https://pypgx.readthedocs.io) pharmacogenomics pipelines in parallel, distributing sample batches across Spark workers.
-
-**Syntax:**
-```bash
-spark4vcf [spark-args] pypgx <pipeline> <GENE> <OUTPUT_DIR> <VCF_FILE> [pypgx-options]
-```
-
-**Supported pipelines:** `run-ngs-pipeline`, `run-chip-pipeline`
-
-**Example (chip pipeline, local mode):**
-```bash
-spark4vcf --master local[*] pypgx \
-  run-chip-pipeline CYP2D6 \
-  /data/output/pypgx/CYP2D6/ \
-  /data/1KGP.chr22.norm.1000.vcf.gz \
-  --assembly GRCh38 --force
-```
-
-**Example (NGS pipeline):**
-```bash
-spark4vcf --master local[*] pypgx \
-  run-ngs-pipeline CYP2D6 \
-  /data/output/pypgx/CYP2D6-ngs/ \
-  /data/variants.vcf.gz \
-  --assembly GRCh38
-```
-
-**How it works:**
-1. Sample names are extracted from the VCF using `bcftools`.
-2. Samples are grouped into batches of 10 (can modify and rebuild) and written to temporary sample list files.
-3. Each Spark task runs `pypgx` on its sample batch, writing to a unique subdirectory under `OUTPUT_DIR`.
-
----
-
-### 4.3 GATK — Genome Analysis Toolkit
-
-Runs [GATK HaplotypeCaller](https://gatk.broadinstitute.org) in parallel across genomic intervals.
-
-**Syntax:**
-```bash
-spark4vcf [spark-args] gatk <gatk-subcommand> [gatk-options]
-```
-
-**Example:**
-```bash
-spark4vcf --master local[*] gatk \
-  HaplotypeCaller \
-  --java-options -Xmx4g \
-  -R /data/Homo_sapiens_assembly38.fasta \
-  -I /data/sample.bam \
-  -O /data/output/ \
-  -ERC GVCF
-```
-
-**How it works:**
-1. The input interval list is split into chunks (default: 3 intervals/task).
-2. Each Spark task runs GATK on its subset of intervals.
-3. Per-interval VCF outputs are written to the specified output directory.
+- 📄 [4.1 VEP — Variant Effect Predictor](./docs/vep.md)
+- 📄 [4.2 PyPGx — Pharmacogenomics Analysis](./docs/pypgx.md)
+- 📄 [4.3 GATK — Genome Analysis Toolkit](./docs/gatk.md)
 
 ---
 
