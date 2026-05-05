@@ -37,7 +37,7 @@ object VEP {
       .filterNot(placeholders.contains)
       .lastOption
       .getOrElse("")
-    val vepBin = "pixi run --manifest-path /spark4vcf/pixi.toml -e default -- vep"
+    val vepBin = sys.env.getOrElse("VEP_BIN", "vep")
 
     // If inputPath is a local file, upload it to HDFS so all Spark workers can read it.
     // If it already starts with a URI scheme (hdfs://, s3://, etc.) use it directly.

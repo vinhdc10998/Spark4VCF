@@ -100,7 +100,8 @@ object PYPGX {
     // --- Get sample list from the local VCF using bcftools ---
     import scala.sys.process._
     println(s"[PyPGX] Extracting sample list from $localVariantsPath using bcftools...")
-    val samplesCommand = s"/spark4vcf/.pixi/envs/default/bin/bcftools query -l $localVariantsPath"
+    val bcftoolsBin = sys.env.getOrElse("BCFTOOLS_BIN", "bcftools")
+    val samplesCommand = s"$bcftoolsBin query -l $localVariantsPath"
     val samples = samplesCommand.!!.split("\n").filter(_.nonEmpty)
     println(s"[PyPGX] Found ${samples.length} samples.")
 
@@ -142,7 +143,8 @@ object PYPGX {
         new File(taskOutDir).mkdirs()
         // Replace the shared localOutputDir token in the args with the per-batch dir.
         val taskArgs = pyPGXArgs.replace(localOutputDir, taskOutDir)
-        val cmd = s"/spark4vcf/.pixi/envs/default/bin/pypgx $taskArgs --samples $sampleFile"
+        val pypgxBin = sys.env.getOrElse("PYPGX_BIN", "pypgx")
+        val cmd = s"$pypgxBin $taskArgs --samples $sampleFile"
         val exitCode = Process(cmd).!
         if (exitCode != 0)
           throw new RuntimeException(s"[PyPGX] Task $partIdx (batch $batchIdx) failed with exit code $exitCode")
