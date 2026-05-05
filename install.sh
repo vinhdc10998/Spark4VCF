@@ -18,6 +18,16 @@ fi
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$SCRIPT_DIR"
 
+echo "Checking external tool dependencies..."
+TOOLS=("vep" "gatk" "pypgx" "bcftools" "samtools")
+for tool in "${TOOLS[@]}"; do
+    if ! command -v "$tool" &> /dev/null; then
+        echo "WARNING: '$tool' is not in your PATH. Please ensure it is installed and available before running Spark4VCF, or set the corresponding environment variable (e.g., export ${tool^^}_BIN=/path/to/$tool)."
+    else
+        echo "Found '$tool' at $(command -v "$tool")"
+    fi
+done
+
 echo "Building Spark4VCF JAR via sbt assembly..."
 sbt assembly
 

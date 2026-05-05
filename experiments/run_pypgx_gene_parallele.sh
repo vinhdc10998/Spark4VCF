@@ -12,13 +12,13 @@ declare -A GENE_TO_CHR=(
     ["TPMT"]="chr6" ["UGT1A1"]="chr2" ["VKORC1"]="chr16"
 )
 
-GENES=(
-  "ABCB1" "CACNA1S" "CFTR" "CYP2C19" "CYP2C9" "CYP3A5"
-  "CYP4F2" "DPYD" "F5" "IFNL3" "NAT2" "NUDT15" "RYR1" "SLCO1B1" "TPMT"
-  "UGT1A1" "VKORC1"
-)
+# GENES=(
+#   "ABCB1" "CACNA1S" "CFTR" "CYP2C19" "CYP2C9" "CYP3A5"
+#   "CYP4F2" "DPYD" "F5" "IFNL3" "NAT2" "NUDT15" "RYR1" "SLCO1B1" "TPMT"
+#   "UGT1A1" "VKORC1"
+# )
 
-# GENES=("ABCB1" "CACNA1S" "CFTR" "CYP2C19" "CYP2C9" "CYP3A5" )
+GENES=("CYP2D6" "CYP2B6")
 PARALLEL_JOBS=32
 
 echo "Starting benchmark for ${#GENES[@]} genes with ${PARALLEL_JOBS} parallel jobs..." | tee -a "$LOG_FILE"

@@ -39,7 +39,7 @@ object GATK {
     workDir.mkdirs()
 
     // ── 4. Build the base GATK command (stripping all user -L / -O flags) ──────
-    val gatkBin = "pixi run --manifest-path /spark4vcf/pixi.toml -e default -- /spark4vcf/tools/gatk-4.1.9.0/gatk"
+    val gatkBin = sys.env.getOrElse("GATK_BIN", "gatk")
 
     // Strip every -L <val> and -O <val> pair; we inject our own per-task values.
     val strippedArgs: String = {
@@ -85,7 +85,8 @@ object GATK {
       userIntervals
     } else {
       println(s"[GATK] No -L supplied — reading BAM header from: $inputBam")
-      val samtoolsCmd = s"pixi run --manifest-path /spark4vcf/pixi.toml -e default -- samtools view -H $inputBam"
+      val samtoolsBin = sys.env.getOrElse("SAMTOOLS_BIN", "samtools")
+      val samtoolsCmd = s"$samtoolsBin view -H $inputBam"
       val headerLines = samtoolsCmd.lineStream_!.toList
       val sqLines     = headerLines.filter(_.startsWith("@SQ"))
       require(sqLines.nonEmpty,
@@ -177,7 +178,7 @@ object GATK {
     listPw.close()
     println(s"[GATK] VCF list written to: ${vcfListFile.getAbsolutePath}")
 
-    val bcftoolsBin = "pixi run --manifest-path /spark4vcf/pixi.toml -e default -- bcftools"
+    val bcftoolsBin = sys.env.getOrElse("BCFTOOLS_BIN", "bcftools")
 
     // ── 10. Index each partial VCF with bcftools index ───────────────────────
     sortedPaths.foreach { vcf =>
