@@ -1,3 +1,0 @@
-/spark4vcf/.perl5/lib/perl5/Encode/Locale.pm
-/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/Encode/Locale.pm relocate_as=../../../../../site_perl/Encode/Locale.pm
-/spark4vcf/.pixi/envs/default/man/man3/Encode::Locale.3 relocate_as=../../../../../../../man/man3/Encode::Locale.3

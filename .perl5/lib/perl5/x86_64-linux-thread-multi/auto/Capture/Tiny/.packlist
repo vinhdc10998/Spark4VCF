@@ -1,3 +1,0 @@
-/spark4vcf/.perl5/lib/perl5/Capture/Tiny.pm
-/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/Capture/Tiny.pm relocate_as=../../../../../site_perl/Capture/Tiny.pm
-/spark4vcf/.pixi/envs/default/man/man3/Capture::Tiny.3 relocate_as=../../../../../../../man/man3/Capture::Tiny.3

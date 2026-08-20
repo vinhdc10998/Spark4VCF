@@ -1,6 +1,0 @@
-/spark4vcf/.perl5/lib/perl5/WWW/RobotRules.pm
-/spark4vcf/.perl5/lib/perl5/WWW/RobotRules/AnyDBM_File.pm
-/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/WWW/RobotRules.pm relocate_as=../../../../../site_perl/WWW/RobotRules.pm
-/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/WWW/RobotRules/AnyDBM_File.pm relocate_as=../../../../../site_perl/WWW/RobotRules/AnyDBM_File.pm
-/spark4vcf/.pixi/envs/default/man/man3/WWW::RobotRules.3 relocate_as=../../../../../../../man/man3/WWW::RobotRules.3
-/spark4vcf/.pixi/envs/default/man/man3/WWW::RobotRules::AnyDBM_File.3 relocate_as=../../../../../../../man/man3/WWW::RobotRules::AnyDBM_File.3

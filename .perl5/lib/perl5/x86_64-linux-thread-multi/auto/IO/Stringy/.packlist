@@ -1,8 +1,0 @@
-/spark4vcf/.perl5/lib/perl5/IO/AtomicFile.pm
-/spark4vcf/.perl5/lib/perl5/IO/InnerFile.pm
-/spark4vcf/.perl5/lib/perl5/IO/Lines.pm
-/spark4vcf/.perl5/lib/perl5/IO/Scalar.pm
-/spark4vcf/.perl5/lib/perl5/IO/ScalarArray.pm
-/spark4vcf/.perl5/lib/perl5/IO/Stringy.pm
-/spark4vcf/.perl5/lib/perl5/IO/Wrap.pm
-/spark4vcf/.perl5/lib/perl5/IO/WrapTie.pm

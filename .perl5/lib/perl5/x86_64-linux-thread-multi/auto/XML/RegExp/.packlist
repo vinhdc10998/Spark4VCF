@@ -1,3 +1,0 @@
-/spark4vcf/.perl5/lib/perl5/XML/RegExp.pm
-/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/XML/RegExp.pm relocate_as=../../../../../site_perl/XML/RegExp.pm
-/spark4vcf/.pixi/envs/default/man/man3/XML::RegExp.3 relocate_as=../../../../../../../man/man3/XML::RegExp.3

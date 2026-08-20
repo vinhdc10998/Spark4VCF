@@ -1,6 +1,0 @@
-/spark4vcf/.perl5/lib/perl5/Test/Most.pm
-/spark4vcf/.perl5/lib/perl5/Test/Most/Exception.pm
-/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/Test/Most.pm relocate_as=../../../../../site_perl/Test/Most.pm
-/spark4vcf/.pixi/envs/default/lib/perl5/site_perl/Test/Most/Exception.pm relocate_as=../../../../../site_perl/Test/Most/Exception.pm
-/spark4vcf/.pixi/envs/default/man/man3/Test::Most.3 relocate_as=../../../../../../../man/man3/Test::Most.3
-/spark4vcf/.pixi/envs/default/man/man3/Test::Most::Exception.3 relocate_as=../../../../../../../man/man3/Test::Most::Exception.3

@@ -1,1 +1,0 @@
-{"version":"0.014","provides":{"HTTP::CookieJar::LWP":{"file":"lib/HTTP/CookieJar/LWP.pm","version":"0.014"},"HTTP::CookieJar":{"version":"0.014","file":"lib/HTTP/CookieJar.pm"}},"name":"HTTP::CookieJar","pathname":"D/DA/DAGOLDEN/HTTP-CookieJar-0.014.tar.gz","dist":"HTTP-CookieJar-0.014","target":"HTTP::CookieJar::LWP"}
