@@ -1,1 +1,0 @@
-{"virtualbox":{"/data":{"guestpath":"/data","hostpath":"/mnt/nas/earth/vinhdt17/spark4vcf/Data","disabled":false,"__vagrantfile":true},"/spark4vcf":{"guestpath":"/spark4vcf","hostpath":"/home/vinhdt17/Spark4VCF","disabled":false,"__vagrantfile":true}}}
